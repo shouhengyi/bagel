@@ -1,0 +1,44 @@
+{
+  // File formatter settings
+  "editor.formatOnSave": true,
+  "editor.rulers": [100],
+  "editor.formatOnSaveMode": "file",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.terraform": "explicit",
+    "source.organizeImports": "explicit"
+  },
+  "[starlark]": {
+    "editor.defaultFormatter": "BazelBuild.vscode-bazel"
+  },
+  "[terraform]": {
+    "editor.defaultFormatter": "hashicorp.terraform"
+  },
+  "[markdown]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[yaml]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[graphql]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[toml]": {
+    "editor.defaultFormatter": "tamasfe.even-better-toml"
+  },
+  "[python]": {
+    "editor.defaultFormatter": "charliermarsh.ruff"
+  },
+  // CSS
+  "css.lint.unknownAtRules": "ignore",
+  // GitHub Copilot
+  "editor.inlineSuggest.enabled": true,
+  // Insert a newline at the EOF
+  "files.insertFinalNewline": true,
+  // Use zsh as the default terminal on Linux
+  "terminal.integrated.defaultProfile.linux": "zsh",
+  // Custom words for the Code Spell Checker dictionary
+  "cSpell.words": [],
+}
