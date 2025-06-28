@@ -1,1 +1,2 @@
-# bagel
+# 🥯 bagel
+Bag Extraction Tool
