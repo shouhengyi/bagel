@@ -30,7 +30,7 @@ class Ros2Reader(reader.Reader):
         return self.metadata["bag_size"]
 
     @property
-    def message_count(self) -> int:
+    def total_message_count(self) -> int:
         """Return the total number of messages in the robolog."""
         return self.metadata["message_count"]
 

@@ -18,7 +18,7 @@ def test_has_correct_properties() -> None:
     assert reader.duration_seconds == 9.077187538146973
     assert reader.path == robolog_path.absolute()
     assert reader.size_bytes == 12464
-    assert reader.message_count == 34
+    assert reader.total_message_count == 34
     assert reader.topics == ["/rosout", "/turtle1/cmd_vel"]
     assert reader.type_names == {
         "/rosout": "rosgraph_msgs/Log",

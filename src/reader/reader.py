@@ -61,7 +61,7 @@ class Reader:
     @property
     def duration_seconds(self) -> float:
         """Return robolog duration in seconds."""
-        return self._end_seconds - self._start_seconds
+        return self.end_seconds - self.start_seconds
 
     @property
     def path(self) -> pathlib.Path:
@@ -79,7 +79,7 @@ class Reader:
         raise NotImplementedError()
 
     @property
-    def message_count(self) -> int:
+    def total_message_count(self) -> int:
         """Return the total number of messages in the robolog."""
         raise NotImplementedError()
 
