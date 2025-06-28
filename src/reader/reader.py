@@ -69,6 +69,11 @@ class Reader:
         return self._path
 
     @property
+    def total_message_count(self) -> int:
+        """Return the total number of messages in the robolog."""
+        return sum(self.message_counts.values())
+
+    @property
     def metadata(self) -> dict[str, Any]:
         """Return robolog metadata as a JSON-serializable dictionary."""
         raise NotImplementedError()
@@ -79,11 +84,6 @@ class Reader:
         raise NotImplementedError()
 
     @property
-    def total_message_count(self) -> int:
-        """Return the total number of messages in the robolog."""
-        raise NotImplementedError()
-
-    @property
     def topics(self) -> list[str]:
         """Return a list of topics in the robolog."""
         raise NotImplementedError()
@@ -91,6 +91,11 @@ class Reader:
     @property
     def type_names(self) -> dict[str, str]:
         """Return a mapping of topic names to their message type names."""
+        raise NotImplementedError()
+
+    @property
+    def message_counts(self) -> dict[str, int]:
+        """Return a mapping of topic names to their message counts."""
         raise NotImplementedError()
 
     def _raise_if_missing_topics(self, topics: list[str]) -> None:

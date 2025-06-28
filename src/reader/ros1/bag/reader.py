@@ -33,11 +33,6 @@ class BagReader(reader.Reader):
         return self.metadata["size"]
 
     @property
-    def total_message_count(self) -> int:
-        """Return the total number of messages in the robolog."""
-        return self.metadata["messages"]
-
-    @property
     def topics(self) -> list[str]:
         """Return a list of topics in the robolog."""
         return [info["topic"] for info in self.metadata["topics"]]
@@ -46,3 +41,8 @@ class BagReader(reader.Reader):
     def type_names(self) -> dict[str, str]:
         """Return a mapping of topic names to their message type names."""
         return {info["topic"]: info["type"] for info in self.metadata["topics"]}
+
+    @property
+    def message_counts(self) -> dict[str, int]:
+        """Return a mapping of topic names to their message counts."""
+        return {info["topic"]: info["messages"] for info in self.metadata["topics"]}

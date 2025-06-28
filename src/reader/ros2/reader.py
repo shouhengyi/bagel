@@ -30,11 +30,6 @@ class Ros2Reader(reader.Reader):
         return self.metadata["bag_size"]
 
     @property
-    def total_message_count(self) -> int:
-        """Return the total number of messages in the robolog."""
-        return self.metadata["message_count"]
-
-    @property
     def topics(self) -> list[str]:
         """Return a list of topics in the robolog."""
         return list(
@@ -49,5 +44,13 @@ class Ros2Reader(reader.Reader):
         """Return a mapping of topic names to their message type names."""
         return {
             topic_info["topic_metadata"]["name"]: topic_info["topic_metadata"]["type"]
+            for topic_info in self.metadata["topics_with_message_count"]
+        }
+
+    @property
+    def message_counts(self) -> dict[str, int]:
+        """Return a mapping of topic names to their message counts."""
+        return {
+            topic_info["topic_metadata"]["name"]: topic_info["message_count"]
             for topic_info in self.metadata["topics_with_message_count"]
         }

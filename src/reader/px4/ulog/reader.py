@@ -32,16 +32,6 @@ class ULogReader(reader.Reader):
         return self.path.stat().st_size
 
     @property
-    def total_message_count(self) -> int:
-        """Return the total number of messages in the robolog."""
-        total = 0
-        for topic_data in self._ulog.data_list:
-            if topic_data.data:
-                first_field = next(iter(topic_data.data))
-                total += len(topic_data.data[first_field])
-        return total
-
-    @property
     def topics(self) -> list[str]:
         """Return a list of topics in the robolog."""
         return [f"{topic_data.name}_{topic_data.multi_id}" for topic_data in self._ulog.data_list]
@@ -53,6 +43,16 @@ class ULogReader(reader.Reader):
             f"{topic_data.name}_{topic_data.multi_id}": topic_data.name
             for topic_data in self._ulog.data_list
         }
+
+    @property
+    def message_counts(self) -> dict[str, int]:
+        """Return a mapping of topic names to their message counts."""
+        counts = {}
+        for topic_data in self._ulog.data_list:
+            topic_name = f"{topic_data.name}_{topic_data.multi_id}"
+            first_field = next(iter(topic_data.data))
+            counts[topic_name] = len(topic_data.data[first_field])
+        return counts
 
     def _iter_messages(
         self,
