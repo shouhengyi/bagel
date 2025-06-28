@@ -20,7 +20,7 @@ def extract_metadata(robolog_path: str | pathlib.Path) -> dict[str, Any]:
         dict[str, Any]: Robolog's metadata as a JSON-serializable dictionary.
 
     """
-    ulog = core.ULog(str(robolog_path), parse_header_only=True)
+    ulog = core.ULog(str(robolog_path), parse_header_only=False)
 
     return {
         "start_timestamp_seconds": ulog.start_timestamp / 1e6,
