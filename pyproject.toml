@@ -1,0 +1,77 @@
+[project]
+name = "bagel"
+version = "0.1.0"
+description = "Bag Extraction Tool"
+authors = []
+requires-python = ">=3.10,<3.13"
+dependencies = [
+    "duckdb (>=1.3.0,<2.0.0)",
+    "humanize (>=4.12.0, <5.0.0)",
+    "lark (>=1.2.0,<2.0.0)",
+    "opencv-python (>=4.11.0,<5.0.0)",
+    "pandas (>=2.2.0,<3.0.0)",
+    "protobuf (>=6.31.0,<7.0.0)",
+    "pyarrow (>=18.0.0,<19.0.0)",
+    "pydantic (>=2.11.0,<3.0.0)",
+    "pydantic-settings (>=2.9.0,<3.0.0)",
+    "taipy (>=4.1.0,<5.0.0)",
+    "typer (>=0.16.0,<1.0.0)",
+]
+
+[tool.poetry]
+packages = [{ include = "*", from = "src" }]
+
+[tool.poetry.group.test.dependencies]
+pytest = "^8.4.0"
+ruff = "^0.11.0"
+
+[tool.poetry.group.dev.dependencies]
+ipython = "^8.0.0"
+pytest = "^8.4.0"
+ruff = "^0.11.0"
+
+[tool.poetry.group.ros1.dependencies]
+pycryptodomex = "^3.23.0"
+python-gnupg = "^0.5.0"
+rospkg = "^1.6.0"
+
+[tool.poetry.group.ros2.dependencies]
+mcap = "^1.3.0"
+mcap-ros1-support = "^0.7.0"
+mcap-ros2-support = "^0.5.0"
+mcap-protobuf-support = "^0.5.0"
+
+[tool.poetry.group.px4.dependencies]
+pyulog = "^1.2.0"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = [
+    "A",   # flake8-builtins
+    "ANN", # flake8-annotations
+    "B",   # flake8-bugbear
+    "C90", # mccabe (cyclomatic complexity)
+    "D",   # pydocstyle
+    "E",   # pycodestyle
+    "F",   # pyflakes
+    "I",   # isort
+    "N",   # pep8-naming
+    "PL",  # pylint
+    "RUF", # Ruff-specific rules
+    "S",   # flake8-bandit
+    "T20", # flake8-print
+    "UP",  # pyupgrade
+    "W",   # pycodestyle warnings
+]
+ignore = [
+    "D203", # conflicts with D211
+    "D213", # conflicts with D212
+]
+
+[tool.ruff.lint.per-file-ignores]
+"./test/**/*.py" = ["S101", "D", "PLR2004"]
