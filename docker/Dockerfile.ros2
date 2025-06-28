@@ -1,0 +1,74 @@
+ARG ROS_DISTRO
+FROM ros:${ROS_DISTRO}-ros-core
+
+# Upgrade base image
+RUN apt-get update && apt-get upgrade -y && \
+    apt-get dist-upgrade -y && \
+    apt-get autoremove -y && \
+    apt-get clean
+
+# Install common tools
+RUN apt-get install -y --no-install-recommends vim
+
+# Install pip and venv
+RUN apt-get install -y --no-install-recommends python3-pip python3-venv && \
+    python3 -m pip --version && \
+    python3 -m venv --help
+
+# Install OpenCV
+RUN apt-get -y --no-install-recommends install python3-opencv
+
+# Install ROS2 packages
+RUN apt-get -y --no-install-recommends install \
+    ros-${ROS_DISTRO}-ros-base \
+    ros-${ROS_DISTRO}-ros2bag \
+    ros-${ROS_DISTRO}-rosbag2-transport \
+    ros-${ROS_DISTRO}-rosbag2-storage-mcap
+
+# Create non-root application user
+ARG USERNAME=app
+ARG USER_UID=1001
+ARG USER_GID=$USER_UID
+RUN groupadd --gid $USER_GID $USERNAME && \
+    useradd --uid $USER_UID --gid $USER_GID -m $USERNAME
+
+# Set up runtime environment
+USER ${USERNAME}
+ENV PATH="/home/${USERNAME}/.local/bin:$PATH"
+WORKDIR /home/${USERNAME}/runtime
+
+# Install pipx
+ARG PIPX_VERSION
+RUN python3 -m venv /home/${USERNAME}/.venv_pipx
+RUN /bin/bash -c "source /home/${USERNAME}/.venv_pipx/bin/activate && \
+    python3 -m pip install \"pipx==${PIPX_VERSION}\" && \
+    pipx ensurepath && \
+    pipx --version"
+
+# Install Poetry
+ARG POETRY_VERSION
+RUN python3 -m venv /home/${USERNAME}/.venv_pipx
+RUN /bin/bash -c "source /home/${USERNAME}/.venv_pipx/bin/activate && \
+    pipx install \"poetry==${POETRY_VERSION}\" && \
+    poetry self add poetry-plugin-shell && \
+    poetry --version"
+
+# Set up virtual environment and install PyPI dependencies
+COPY --chown=${USERNAME}:${USERNAME} pyproject.toml ./
+RUN poetry config virtualenvs.create true && \
+    poetry config virtualenvs.in-project true && \
+    poetry env activate
+
+ARG DEV_MODE
+RUN if [ "_${DEV_MODE}" = "_true" ]; then \
+    poetry install --only main,ros2,dev --no-root --no-interaction --no-ansi; \
+    else \
+    poetry install --only main,ros2 --no-root --no-interaction --no-ansi; \
+    fi
+
+# Expose port to Taipy
+ARG BAGEL_TAIPY_LOCAL_HOST
+ARG BAGEL_TAIPY_LOCAL_PORT
+ENV BAGEL_TAIPY_LOCAL_HOST=${BAGEL_TAIPY_LOCAL_HOST}
+ENV BAGEL_TAIPY_LOCAL_PORT=${BAGEL_TAIPY_LOCAL_PORT}
+EXPOSE ${BAGEL_TAIPY_LOCAL_PORT}

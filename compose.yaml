@@ -1,0 +1,65 @@
+services:
+  ros2-kilted:
+    image: ros2-kilted
+    build:
+      context: ./
+      dockerfile: ./docker/Dockerfile.ros2
+      args:
+        ROS_DISTRO: kilted
+        PIPX_VERSION: "1.7.1"
+        POETRY_VERSION: "2.1.3"
+        DEV_MODE: ${DEV_MODE:-false}
+        BAGEL_TAIPY_LOCAL_HOST: ${BAGEL_TAIPY_LOCAL_HOST:-"0.0.0.0"}
+        BAGEL_TAIPY_LOCAL_PORT: ${BAGEL_TAIPY_LOCAL_PORT:-5000}
+
+  ros2-jazzy:
+    image: ros2-jazzy
+    build:
+      context: ./
+      dockerfile: ./docker/Dockerfile.ros2
+      args:
+        ROS_DISTRO: jazzy
+        PIPX_VERSION: "1.7.1"
+        POETRY_VERSION: "2.1.3"
+        DEV_MODE: ${DEV_MODE:-false}
+        BAGEL_TAIPY_LOCAL_HOST: ${BAGEL_TAIPY_LOCAL_HOST:-"0.0.0.0"}
+        BAGEL_TAIPY_LOCAL_PORT: ${BAGEL_TAIPY_LOCAL_PORT:-5000}
+
+  ros2-iron:
+    image: ros2-iron
+    build:
+      context: ./
+      dockerfile: ./docker/Dockerfile.ros2
+      args:
+        ROS_DISTRO: iron
+        PIPX_VERSION: "1.7.1"
+        POETRY_VERSION: "2.1.3"
+        DEV_MODE: ${DEV_MODE:-false}
+        BAGEL_TAIPY_LOCAL_HOST: ${BAGEL_TAIPY_LOCAL_HOST:-"0.0.0.0"}
+        BAGEL_TAIPY_LOCAL_PORT: ${BAGEL_TAIPY_LOCAL_PORT:-5000}
+
+  ros2-humble:
+    image: ros2-humble
+    build:
+      context: ./
+      dockerfile: ./docker/Dockerfile.ros2
+      args:
+        ROS_DISTRO: humble
+        PIPX_VERSION: "1.7.1"
+        POETRY_VERSION: "2.1.3"
+        DEV_MODE: ${DEV_MODE:-false}
+        BAGEL_TAIPY_LOCAL_HOST: ${BAGEL_TAIPY_LOCAL_HOST:-"0.0.0.0"}
+        BAGEL_TAIPY_LOCAL_PORT: ${BAGEL_TAIPY_LOCAL_PORT:-5000}
+
+  ros1-noetic:
+    image: ros1-noetic
+    build:
+      context: ./
+      dockerfile: ./docker/Dockerfile.ros1
+      args:
+        PYTHON_VERSION: "3.10"
+        PIPX_VERSION: "1.7.1"
+        POETRY_VERSION: "2.1.3"
+        DEV_MODE: ${DEV_MODE:-false}
+        BAGEL_TAIPY_LOCAL_HOST: ${BAGEL_TAIPY_LOCAL_HOST:-"0.0.0.0"}
+        BAGEL_TAIPY_LOCAL_PORT: ${BAGEL_TAIPY_LOCAL_PORT:-5000}

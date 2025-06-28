@@ -1,0 +1,112 @@
+# Ubuntu 20.04 LTS (Focal Fossa)
+# Python 3.8.10
+FROM ros:noetic
+
+########################################################
+### ROS1 Noetic has reached EOL as of May, 2025      ###
+### The following steps are needed to fix this image ###
+########################################################
+
+# Remove old ROS package repository lists to prevent conflicts or signature errors
+RUN rm -f \
+    /etc/apt/sources.list.d/ros-latest.list \
+    /etc/apt/sources.list.d/ros1-latest.list
+
+# Remove expired GPG keys used to authenticate ROS package repositories
+RUN rm -f \
+    /usr/share/keyrings/ros1-latest-archive-keyring.gpg \
+    /usr/share/keyrings/ros-archive-keyring.gpg
+
+# Remove the expired GPG key associated with Open Robotics, if present
+ARG GPG_KEY=F42ED6FBAB17C654
+RUN if apt-key list | grep -q "${GPG_KEY}"; then \
+    apt-key del "${GPG_KEY}"; \
+    else \
+    echo "GPG Key ${GPG_KEY} not found, skipping deletion."; \
+    fi
+
+# Install tools needed to add new ROS package repositories and GPG keys
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends curl gnupg lsb-release vim && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Update ROS package repository lists and add the new GPG key
+ARG GPG_FILE=/usr/share/keyrings/ros-archive-keyring.gpg
+RUN curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o ${GPG_FILE} && \
+    echo "deb [signed-by=${GPG_FILE}] http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" \
+    > /etc/apt/sources.list.d/ros-latest.list
+
+# Upgrade base image
+RUN apt-get update && apt-get upgrade -y && apt-get clean
+
+# Source ROS for all users
+RUN echo "source /opt/ros/noetic/setup.bash" >> /etc/bash.bashrc
+
+#######################################################
+# ROS1 Noetic should be fixed at this point           #
+# Now we can continue with the rest of the Dockerfile #
+#######################################################
+
+# Install Python and venv
+RUN apt-get install -y --no-install-recommends software-properties-common && \
+    add-apt-repository ppa:deadsnakes/ppa && \
+    apt-get update
+
+ARG PYTHON_VERSION
+RUN apt-get install -y --no-install-recommends python${PYTHON_VERSION} python${PYTHON_VERSION}-venv && \
+    ln -sf /usr/bin/python${PYTHON_VERSION} /usr/bin/python3 && \
+    python3 --version
+
+# Install pip
+RUN curl -sSL https://bootstrap.pypa.io/get-pip.py | python${PYTHON_VERSION} && \
+    ln -sf /usr/local/bin/pip${PYTHON_VERSION} /usr/local/bin/pip3 && \
+    pip3 --version
+
+# Install OpenCV
+RUN apt-get -y --no-install-recommends install python3-opencv
+
+# Create non-root application user
+ARG USERNAME=app
+ARG USER_UID=1001
+ARG USER_GID=$USER_UID
+
+RUN groupadd --gid $USER_GID $USERNAME && \
+    useradd --uid $USER_UID --gid $USER_GID -m $USERNAME
+
+# Set up runtime environment
+USER ${USERNAME}
+ENV PATH="/home/${USERNAME}/.local/bin:$PATH"
+WORKDIR /home/${USERNAME}/runtime
+
+# Install pipx
+ARG PIPX_VERSION
+RUN python3 -m pip install --user "pipx==${PIPX_VERSION}" && \
+    python3 -m pipx ensurepath && \
+    pipx --version
+
+# Install Poetry
+ARG POETRY_VERSION
+RUN pipx install "poetry==${POETRY_VERSION}" && \
+    poetry self add poetry-plugin-shell && \
+    poetry --version
+
+# Set up virtual environment and install PyPI dependencies
+COPY --chown=${USERNAME}:${USERNAME} pyproject.toml ./
+RUN poetry config virtualenvs.create true && \
+    poetry config virtualenvs.in-project true && \
+    poetry env activate
+
+ARG DEV_MODE
+RUN if [ "_${DEV_MODE}" = "_true" ]; then \
+    poetry install --only main,ros1,dev --no-root --no-interaction --no-ansi; \
+    else \
+    poetry install --only main,ros1 --no-root --no-interaction --no-ansi; \
+    fi
+
+# Expose port to Taipy
+ARG BAGEL_TAIPY_LOCAL_HOST
+ARG BAGEL_TAIPY_LOCAL_PORT
+ENV BAGEL_TAIPY_LOCAL_HOST=${BAGEL_TAIPY_LOCAL_HOST}
+ENV BAGEL_TAIPY_LOCAL_PORT=${BAGEL_TAIPY_LOCAL_PORT}
+EXPOSE ${BAGEL_TAIPY_LOCAL_PORT}
