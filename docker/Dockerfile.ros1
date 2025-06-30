@@ -27,7 +27,7 @@ RUN if apt-key list | grep -q "${GPG_KEY}"; then \
 
 # Install tools needed to add new ROS package repositories and GPG keys
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends curl gnupg lsb-release vim && \
+    apt-get install -y --no-install-recommends curl gnupg jq lsb-release vim && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 

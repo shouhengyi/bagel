@@ -8,10 +8,12 @@ RUN apt-get update && apt-get upgrade -y && \
     apt-get clean
 
 # Install common tools
-RUN apt-get install -y --no-install-recommends vim
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends jq vim
 
 # Install pip and venv
-RUN apt-get install -y --no-install-recommends python3-pip python3-venv && \
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends python3-pip python3-venv && \
     python3 -m pip --version && \
     python3 -m venv --help
 
