@@ -9,6 +9,7 @@ import typer
 import yaml
 
 from src.command.extract import operator, validate
+from src.command.extract.operator.save import FileExtension
 
 SPINNER: str = "dots12"
 
@@ -27,6 +28,9 @@ def extract(  # noqa: C901, PLR0912
     ],
     start_seconds: Annotated[float | None, typer.Option(help="Start time in seconds")] = None,
     end_seconds: Annotated[float | None, typer.Option(help="End time in seconds")] = None,
+    output: Annotated[
+        FileExtension, typer.Option(help="Output file format for saved DataFrames")
+    ] = FileExtension.PARQUET,
 ) -> None:
     """Extract and transform robolog data into DataFrames."""
     if not yaml_path.exists():
@@ -78,7 +82,9 @@ def extract(  # noqa: C901, PLR0912
                     op = operator.SaveDataFrame.from_dict(name)
                     operators.append(op)
                     tasks.append(
-                        functools.partial(op.write, robolog_path, start_seconds, end_seconds)
+                        functools.partial(
+                            op.write, robolog_path, start_seconds, end_seconds, output
+                        )
                     )
 
             case _:

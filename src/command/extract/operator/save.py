@@ -17,6 +17,7 @@ class FileExtension(Enum):
 
     PARQUET = "parquet"
     CSV = "csv"
+    JSONL = "jsonl"
 
 
 class SaveDataFrame(BaseModel):
@@ -70,6 +71,8 @@ class SaveDataFrame(BaseModel):
                     relation.write_parquet(str(file_path))
                 case FileExtension.CSV:
                     relation.write_csv(str(file_path))
+                case FileExtension.JSONL:
+                    duckdb.sql(f"COPY relation TO '{file_path!s}' (FORMAT 'JSON')")
                 case _:
                     raise ValueError(f"Unsupported disk format: {ext}")
             self._saved_file_path = file_path
