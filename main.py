@@ -9,7 +9,7 @@ app = typer.Typer()
 
 app.add_typer(extract_command.app)
 
-app.add_typer(clear_command.app, name="clear", help="Clear the cache or storage directories.")
+app.add_typer(clear_command.app, name="clear", help="Clear bagel's cache or storage directories.")
 
 
 if __name__ == "__main__":
