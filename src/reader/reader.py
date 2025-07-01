@@ -1,9 +1,11 @@
 """Base reader classes for different reading patterns and robolog types."""
 
 import pathlib
+from collections.abc import Iterator
 from typing import Any
 
 import pyarrow as pa
+from pydantic import BaseModel
 
 from settings import settings
 from src import robolog
@@ -17,6 +19,24 @@ class TopicsNotFoundError(ValueError):
 
 class MessageTypeNotFoundError(ValueError):
     """Raised when a message type is not found in the robolog."""
+
+
+class LoggingMessage(BaseModel):
+    """Base class for a logging message in a robolog."""
+
+    robolog_id: str
+    timestamp_seconds: float
+    level: str
+    message: str
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert the logging message to a dictionary."""
+        return {
+            settings.ROBOLOG_ID_COLUMN_NAME: self.robolog_id,
+            settings.TIMESTAMP_SECONDS_COLUMN_NAME: self.timestamp_seconds,
+            "level": self.level,
+            "message": self.message,
+        }
 
 
 class Reader:
@@ -96,6 +116,11 @@ class Reader:
     @property
     def message_counts(self) -> dict[str, int]:
         """Return a mapping of topic names to their message counts."""
+        raise NotImplementedError()
+
+    @property
+    def logging_messages(self) -> Iterator[LoggingMessage]:
+        """Iterate over logging messages in the robolog."""
         raise NotImplementedError()
 
     def _raise_if_missing_topics(self, topics: list[str]) -> None:

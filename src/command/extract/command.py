@@ -71,6 +71,12 @@ def extract(  # noqa: C901, PLR0912
                         functools.partial(op.register, robolog_path, start_seconds, end_seconds)
                     )
 
+            case operator.ExtractLogging.YAML_KEYWORD:
+                for op in [operator.ExtractLogging.from_dict(config) for config in configs]:
+                    dataframes.append(op.name)
+                    operators.append(op)
+                    tasks.append(functools.partial(op.register, robolog_path))
+
             case operator.TransformDataFrame.YAML_KEYWORD:
                 for op in [operator.TransformDataFrame.from_dict(config) for config in configs]:
                     dataframes.append(op.name)

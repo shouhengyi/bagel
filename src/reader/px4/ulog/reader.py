@@ -8,7 +8,28 @@ from typing import Any
 from pyulog import core
 
 from src.reader import reader
-from src.reader.px4.ulog.metadata import extract_metadata
+from src.reader.px4.ulog.metadata import to_dict as metadata_to_dict
+
+
+class LoggingMessage(reader.LoggingMessage):
+    """Logging message in a PX4 .ulog."""
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert the logging message to a dictionary."""
+        numeric_level = {
+            "DEBUG": 7,
+            "INFO": 6,
+            "NOTICE": 5,
+            "WARNING": 4,
+            "ERROR": 3,
+            "CRITICAL": 2,
+            "ALERT": 1,
+            "EMERGENCY": 0,
+        }.get(self.level, None)
+        return {
+            **super().to_dict(),
+            "numeric_level": numeric_level,
+        }
 
 
 class ULogReader(reader.Reader):
@@ -18,8 +39,8 @@ class ULogReader(reader.Reader):
         """Initialize the ULogReader."""
         super().__init__(robolog_path, use_cache)
 
-        self._metadata = extract_metadata(self.path)
         self._ulog = core.ULog(str(self.path), parse_header_only=False)
+        self._metadata = metadata_to_dict(self._ulog)
 
     @property
     def metadata(self) -> dict[str, Any]:
@@ -53,6 +74,17 @@ class ULogReader(reader.Reader):
             first_field = next(iter(topic_data.data))
             counts[topic_name] = len(topic_data.data[first_field])
         return counts
+
+    @property
+    def logging_messages(self) -> Iterator[LoggingMessage]:
+        """Iterate over logging messages in the robolog."""
+        for message in self._ulog.logged_messages:
+            yield LoggingMessage(
+                robolog_id=self.robolog_id,
+                timestamp_seconds=message.timestamp / 1e6,
+                level=message.log_level_str(),
+                message=message.message,
+            )
 
     def _iter_messages(
         self,

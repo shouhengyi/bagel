@@ -9,19 +9,12 @@ from pyulog import core
 from src.reader.metadata import find_primitives
 
 
-@functools.lru_cache(maxsize=128)
-def extract_metadata(robolog_path: str | pathlib.Path) -> dict[str, Any]:
-    """Return metadata from a PX4 .ulog file as a JSON-serializable dictionary.
+def to_dict(ulog: core.ULog) -> dict[str, Any]:
+    """Return metadata from a core.ULog object as a JSON-serializable dictionary.
 
-    Args:
-        robolog_path (str | pathlib.Path): Path to the PX4 .ulog file.
-
-    Returns:
-        dict[str, Any]: Robolog's metadata as a JSON-serializable dictionary.
+    ULog must be initialized with `parse_header_only=False` to include all topics.
 
     """
-    ulog = core.ULog(str(robolog_path), parse_header_only=False)
-
     return {
         "start_timestamp_seconds": ulog.start_timestamp / 1e6,
         "last_timestamp_seconds": ulog.last_timestamp / 1e6,
@@ -39,3 +32,17 @@ def extract_metadata(robolog_path: str | pathlib.Path) -> dict[str, Any]:
         "file_corruption": ulog.file_corruption,
         "has_default_parameters": ulog.has_default_parameters,
     }
+
+
+@functools.lru_cache(maxsize=128)
+def extract_metadata(robolog_path: str | pathlib.Path) -> dict[str, Any]:
+    """Return metadata from a PX4 .ulog file as a JSON-serializable dictionary.
+
+    Args:
+        robolog_path (str | pathlib.Path): Path to the PX4 .ulog file.
+
+    Returns:
+        dict[str, Any]: Robolog's metadata as a JSON-serializable dictionary.
+
+    """
+    return to_dict(core.ULog(str(robolog_path), parse_header_only=False))
