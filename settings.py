@@ -54,11 +54,8 @@ class Settings(BaseSettings):
     # Maximum number of rows to display in DuckDB queries
     DUCKDB_DISPLAY_MAX_ROWS: int = 3
 
-    # Host of the local taipy visualization service
-    TAIPY_LOCAL_HOST: str = "0.0.0.0"  # noqa: S104
-
-    # Port of the local taipy visualization service
-    TAIPY_LOCAL_PORT: int = 5000
+    # Port of the local webapp
+    WEBAPP_LOCAL_PORT: int = 8501
 
 
 settings = Settings()
