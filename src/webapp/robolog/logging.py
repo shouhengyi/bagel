@@ -21,9 +21,15 @@ with st.container():
 
 
 with st.spinner("Retrieving logging messages...", show_time=True):
-    df_logging = pd.DataFrame(
-        [message.to_dict() for message in topic_reader.logging_messages]
-    ).drop(settings.ROBOLOG_ID_COLUMN_NAME, axis=1)
+    messages = [message.to_dict() for message in topic_reader.logging_messages]
+
+
+with st.container():
+    if not messages:
+        st.warning("No logging messages found in this robolog.")
+        st.stop()
+
+    df_logging = pd.DataFrame(messages).drop(settings.ROBOLOG_ID_COLUMN_NAME, axis=1)
 
     all_log_levels = df_logging["level"].unique().tolist()
 
@@ -50,4 +56,4 @@ with st.spinner("Retrieving logging messages...", show_time=True):
         & (df_logging["timestamp_seconds"] <= max_timestamp_seconds)
     ]
 
-    st.dataframe(df_logging, hide_index=True)
+    st.dataframe(df_logging, hide_index=True, height=800)
