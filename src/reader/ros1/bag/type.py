@@ -4,7 +4,6 @@ from collections.abc import Iterator
 
 import genpy
 import pyarrow as pa
-import rosbag
 
 from settings import settings
 from src.convert.converter import MessageConverter
@@ -24,32 +23,31 @@ class TypeMessageReader(TypeMessageReader, BagReader):
         converter: MessageConverter,
     ) -> Iterator[pa.RecordBatch]:
         """Iterate over record batches for the specified topics and time range."""
-        with rosbag.Bag(self.path, allow_unindexed=self._allow_unindexed) as bag:
-            messages = bag.read_messages(
-                topics,
-                genpy.Time.from_sec(start_seconds) if start_seconds else None,
-                genpy.Time.from_sec(end_seconds) if end_seconds else None,
-            )
+        messages = self._bag.read_messages(
+            topics,
+            genpy.Time.from_sec(start_seconds) if start_seconds else None,
+            genpy.Time.from_sec(end_seconds) if end_seconds else None,
+        )
 
-            batch_size = settings.MIN_ARROW_RECORD_BATCH_SIZE_COUNT
-            batch = {column: [] for column in schema.names}
+        batch_size = settings.MIN_ARROW_RECORD_BATCH_SIZE_COUNT
+        batch = {column: [] for column in schema.names}
 
-            for topic, message, time in messages:
-                record = {
-                    settings.ROBOLOG_ID_COLUMN_NAME: self.robolog_id,
-                    settings.TIMESTAMP_SECONDS_COLUMN_NAME: time.to_sec(),
-                    settings.TOPIC_COLUMN_NAME: topic,
-                    settings.MESSAGE_COLUMN_NAME: converter.to_dict(message),
-                }
+        for topic, message, time in messages:
+            record = {
+                settings.ROBOLOG_ID_COLUMN_NAME: self.robolog_id,
+                settings.TIMESTAMP_SECONDS_COLUMN_NAME: time.to_sec(),
+                settings.TOPIC_COLUMN_NAME: topic,
+                settings.MESSAGE_COLUMN_NAME: converter.to_dict(message),
+            }
 
-                for column, value in record.items():
-                    batch[column].append(value)
+            for column, value in record.items():
+                batch[column].append(value)
 
-                if len(batch[settings.ROBOLOG_ID_COLUMN_NAME]) >= batch_size:
-                    record_batch = pa.RecordBatch.from_pydict(batch, schema=schema)
-                    batch_size = self._estimate_record_batch_size_count(record_batch)
-                    batch = {column: [] for column in schema.names}
-                    yield record_batch
+            if len(batch[settings.ROBOLOG_ID_COLUMN_NAME]) >= batch_size:
+                record_batch = pa.RecordBatch.from_pydict(batch, schema=schema)
+                batch_size = self._estimate_record_batch_size_count(record_batch)
+                batch = {column: [] for column in schema.names}
+                yield record_batch
 
-            if batch[settings.ROBOLOG_ID_COLUMN_NAME]:
-                yield pa.RecordBatch.from_pydict(batch, schema=schema)
+        if batch[settings.ROBOLOG_ID_COLUMN_NAME]:
+            yield pa.RecordBatch.from_pydict(batch, schema=schema)

@@ -44,9 +44,10 @@ class BagReader(reader.Reader):
         """Initialize the BagReader."""
         super().__init__(robolog_path, use_cache)
 
-        self._allow_unindexed = allow_unindexed
-        with rosbag.Bag(self.path, allow_unindexed=self._allow_unindexed) as bag:
-            self._metadata = yaml.safe_load(bag._get_yaml_info())
+        self._bag = rosbag.Bag(self.path, allow_unindexed=allow_unindexed)
+        self._metadata = yaml.safe_load(self._bag._get_yaml_info())
+        self._start_seconds = self._bag.get_start_time()
+        self._end_seconds = self._bag.get_end_time()
 
     @property
     def metadata(self) -> dict[str, Any]:
@@ -76,31 +77,33 @@ class BagReader(reader.Reader):
     @property
     def logging_messages(self) -> Iterator[LoggingMessage]:
         """Iterate over logging messages in the robolog."""
-        with rosbag.Bag(self.path, allow_unindexed=self._allow_unindexed) as bag:
-            topics = [
-                topic
-                for topic, type_name in self.type_names.items()
-                if type_name == LOGGING_MESSAGE_TYPE_NAME
-            ]
+        topics = [
+            topic
+            for topic, type_name in self.type_names.items()
+            if type_name == LOGGING_MESSAGE_TYPE_NAME
+        ]
 
-            for topic, message, timestamp in bag.read_messages(topics):
-                level = {
-                    1: "DEBUG",
-                    2: "INFO",
-                    4: "WARN",
-                    8: "ERROR",
-                    16: "FATAL",
-                }.get(message.level, "UNKNOWN")
+        if not topics:
+            return
 
-                yield LoggingMessage(
-                    robolog_id=self.robolog_id,
-                    timestamp_seconds=timestamp.to_sec(),
-                    level=level,
-                    message=message.msg,
-                    numeric_level=message.level,
-                    topic=topic,
-                    name=message.name,
-                    file=message.file,
-                    function=message.function,
-                    line=message.line,
-                )
+        for topic, message, timestamp in self._bag.read_messages(topics=topics):
+            level = {
+                1: "DEBUG",
+                2: "INFO",
+                4: "WARN",
+                8: "ERROR",
+                16: "FATAL",
+            }.get(message.level, "UNKNOWN")
+
+            yield LoggingMessage(
+                robolog_id=self.robolog_id,
+                timestamp_seconds=timestamp.to_sec(),
+                level=level,
+                message=message.msg,
+                numeric_level=message.level,
+                topic=topic,
+                name=message.name,
+                file=message.file,
+                function=message.function,
+                line=message.line,
+            )

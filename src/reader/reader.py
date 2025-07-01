@@ -53,7 +53,9 @@ class Reader:
         self._path = pathlib.Path(robolog_path).absolute()
         self._use_cache = use_cache
         self._robolog_id = robolog.generate_id(self.path)
-        self._start_seconds, self._end_seconds = robolog.start_and_end_seconds(self.path)
+
+        if not hasattr(self, "_start_seconds") or not hasattr(self, "_end_seconds"):
+            self._start_seconds, self._end_seconds = robolog.start_and_end_seconds(self.path)
 
     @property
     def robolog_id(self) -> str:
