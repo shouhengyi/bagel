@@ -26,10 +26,10 @@ def topic_arrow_file(
     topics: list[str],
     start_seconds: float,
     end_seconds: float,
-    asof_join: bool,
+    ffill: bool,
 ) -> pathlib.Path:
     """Generate an Arrow file path containing message time series of selected topics."""
-    seeds = [str(sorted(topics)), str(asof_join)]
+    seeds = [str(sorted(topics)), str(ffill)]
     return (
         _snippet_path(robolog_path, start_seconds, end_seconds)
         / f"topic_{_short_digest(seeds)}.arrow"

@@ -20,7 +20,7 @@ class TopicMessageReader(TopicMessageReader, BagReader):
         topics: list[str],
         start_seconds: float | None,
         end_seconds: float | None,
-        asof_join: bool,
+        ffill: bool,
         schema: pa.Schema,
         converters: dict[str, MessageConverter],
     ) -> Iterator[pa.RecordBatch]:
@@ -37,7 +37,7 @@ class TopicMessageReader(TopicMessageReader, BagReader):
             record = {column: None for column in schema.names}
 
             for topic, message, timestamp in messages:
-                if not asof_join:
+                if not ffill:
                     record = {column: None for column in schema.names}
                 record[settings.ROBOLOG_ID_COLUMN_NAME] = self.robolog_id
                 record[settings.TIMESTAMP_SECONDS_COLUMN_NAME] = timestamp.to_sec()

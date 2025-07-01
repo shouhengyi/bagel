@@ -24,7 +24,7 @@ class TopicMessageReader(Reader):
         topics: list[str] | None = None,
         start_seconds: float | None = None,
         end_seconds: float | None = None,
-        asof_join: bool = False,
+        ffill: bool = False,
         converters: dict[str, MessageConverter] | None = None,
     ) -> ds.Dataset:
         """Return messages for the specified topics and time range.
@@ -33,7 +33,7 @@ class TopicMessageReader(Reader):
             topics (list[str] | None, optional): Topics to read from. If None, all topics are read.
             start_seconds (float | None, optional): When to start reading messages.
             end_seconds (float | None, optional): When to stop reading messages.
-            asof_join (bool, optional): If True, apply as-of joins to the messages across topics.
+            ffill (bool, optional): If True, apply forward fill to the messages topics.
             converters (dict[str, MessageConverter] | None, optional): A dictionary mapping topic
                 names to their corresponding message converters. If provided, they will take
                 precedence over the default converters.
@@ -48,11 +48,11 @@ class TopicMessageReader(Reader):
             raise ValueError("No topics specified for reading messages.")
 
         logger.debug(
-            "Reading topics %s from %s to %s with asof_join=%s",
+            "Reading topics %s from %s to %s with ffill=%s",
             topics,
             start_seconds or self.start_seconds,
             end_seconds or self.end_seconds,
-            asof_join,
+            ffill,
         )
 
         arrow_file = artifacts.topic_arrow_file(
@@ -60,7 +60,7 @@ class TopicMessageReader(Reader):
             topics,
             start_seconds or self.start_seconds,
             end_seconds or self.end_seconds,
-            asof_join,
+            ffill,
         )
         if arrow_file.exists() and self._use_cache:
             logger.debug("Return from cache %s", arrow_file)
@@ -85,7 +85,7 @@ class TopicMessageReader(Reader):
                 pa.RecordBatchFileWriter(sink, schema=schema) as writer,
             ):
                 for record_batch in self._iter_record_batches(
-                    topics, start_seconds, end_seconds, asof_join, schema, converters
+                    topics, start_seconds, end_seconds, ffill, schema, converters
                 ):
                     writer.write_batch(record_batch)
                     logger.debug(
@@ -106,7 +106,7 @@ class TopicMessageReader(Reader):
         topics: list[str],
         start_seconds: float | None,
         end_seconds: float | None,
-        asof_join: bool,
+        ffill: bool,
         schema: pa.Schema,
         converters: dict[str, MessageConverter],
     ) -> Iterator[pa.RecordBatch]:

@@ -26,7 +26,7 @@ class TopicMessageReader(TopicMessageReader, Ros2Reader):
         topics: list[str],
         start_seconds: float | None,
         end_seconds: float | None,
-        asof_join: bool,
+        ffill: bool,
         schema: pa.Schema,
         converters: dict[str, MessageConverter],
     ) -> Iterator[pa.RecordBatch]:
@@ -47,7 +47,7 @@ class TopicMessageReader(TopicMessageReader, Ros2Reader):
             if end_seconds is not None and timestamp_seconds > end_seconds:
                 break
 
-            if not asof_join:
+            if not ffill:
                 record = {column: None for column in schema.names}
             record[settings.ROBOLOG_ID_COLUMN_NAME] = self.robolog_id
             record[settings.TIMESTAMP_SECONDS_COLUMN_NAME] = timestamp_seconds

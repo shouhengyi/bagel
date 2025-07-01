@@ -12,7 +12,7 @@ def test_has_correct_properties() -> None:
     reader = TopicMessageReader(robolog_path)
 
     # THEN
-    assert reader.robolog_id == "78703efd-40f4-50a2-8d1a-e4267dc9f9a0"
+    assert reader.robolog_id == "ab827c6b-e15a-5c8d-875b-593104b7f29b"
     assert reader.start_seconds == 1660676075.8220897
     assert reader.end_seconds == 1660676084.8992772
     assert reader.duration_seconds == 9.077187538146973
@@ -85,13 +85,13 @@ def test_can_read_time_range() -> None:
     assert table.num_rows == 7
 
 
-def test_can_apply_asof_join() -> None:
+def test_can_apply_ffill() -> None:
     # GIVEN
     robolog_path = pathlib.Path(__file__).parent / "data" / "turtle.bag"
     reader = TopicMessageReader(robolog_path)
 
     # WHEN
-    table = reader.read(asof_join=True).to_table()
+    table = reader.read(ffill=True).to_table()
 
     # THEN
     assert table.to_pandas()["/rosout"].notnull().all()

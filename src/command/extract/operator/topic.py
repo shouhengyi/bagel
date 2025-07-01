@@ -19,8 +19,8 @@ class ExtractTopic(BaseModel):
     # List of topics to extract messages from
     topics: list[str]
 
-    # Whether to perform an as-of join on the topics
-    asof_join: bool
+    # Whether to perform a forward fill on the topics
+    ffill: bool
 
     # Keyword used in YAML to identify the operator
     YAML_KEYWORD: Final[str] = "extract_topic"
@@ -42,7 +42,7 @@ class ExtractTopic(BaseModel):
         return ExtractTopic(
             name=data["name"],
             topics=data["topics"],
-            asof_join=data.get("asof_join", False),
+            ffill=data.get("ffill", False),
         )
 
     def register(
@@ -60,6 +60,6 @@ class ExtractTopic(BaseModel):
 
         """
         reader = factory.make_topic_message_reader(robolog_path)
-        dataset = reader.read(self.topics, start_seconds, end_seconds, self.asof_join)
+        dataset = reader.read(self.topics, start_seconds, end_seconds, self.ffill)
         relation = duckdb.from_arrow(dataset)
         duckdb.register(self.name, relation)

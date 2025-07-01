@@ -139,13 +139,11 @@ def generate_id(robolog_path: str | pathlib.Path) -> str:
     if absolute_path.is_file():
         content_hashes.append(_md5_first_64mb(absolute_path))
     else:
-        for path in absolute_path.glob("**/*"):
+        for path in sorted(absolute_path.glob("**/*")):
             if path.is_file():
                 content_hashes.append(_md5_first_64mb(path.absolute()))
 
-    seeds = [str(absolute_path), *sorted(content_hashes)]
-
-    return str(uuid.uuid5(uuid.NAMESPACE_OID, "_".join(seeds)))
+    return str(uuid.uuid5(uuid.NAMESPACE_OID, "_".join(content_hashes)))
 
 
 def snippet_name(

@@ -12,7 +12,7 @@ def test_has_correct_properties() -> None:
     reader = TypeMessageReader(robolog_path)
 
     # THEN
-    assert reader.robolog_id == "2f1c6d41-c61e-504d-ab48-5bab6c8227bc"
+    assert reader.robolog_id == "079769d2-7089-5191-9ac3-c8a7261e065b"
     assert reader.start_seconds == 2.623e-06
     assert reader.end_seconds == 3.034e-06
     assert reader.duration_seconds == 4.1099999999999996e-07
