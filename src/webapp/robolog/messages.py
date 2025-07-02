@@ -1,6 +1,7 @@
 """Content of the Robolog/messages page."""
 
 import streamlit as st
+
 from settings import settings
 
 if not st.session_state.get("robolog_path") or not st.session_state.get("topic_reader"):

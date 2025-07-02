@@ -57,6 +57,9 @@ class Settings(BaseSettings):
     # Port of the local webapp
     WEBAPP_LOCAL_PORT: int = 8501
 
+    # Streamlit webapp path
+    WEBAPP_PATH: str = "app.py"
+
 
 settings = Settings()
 

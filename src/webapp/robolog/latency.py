@@ -2,8 +2,8 @@
 
 import plotly.express as px
 import plotly.graph_objects as go
-
 import streamlit as st
+
 from settings import settings
 from src.reader import factory
 

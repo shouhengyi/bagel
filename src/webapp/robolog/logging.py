@@ -1,8 +1,8 @@
 """Content of the Robolog/logging page."""
 
 import pandas as pd
-
 import streamlit as st
+
 from settings import settings
 
 robolog_path = st.session_state.get("robolog_path", None)
