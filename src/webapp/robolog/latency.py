@@ -28,8 +28,14 @@ with st.container():
 
 with st.spinner(f"Calculating latency for {topic}...", show_time=True):
     freq_reader = factory.make_topic_frequency_reader(st.session_state.robolog_path)
-
     df_latency = freq_reader.read([topic]).to_table().to_pandas()
+
+
+with st.container():
+    if len(df_latency) <= 1:
+        st.warning("Not enough data to calculate latency.")
+        st.stop()
+
     df_latency = df_latency[[settings.TIMESTAMP_SECONDS_COLUMN_NAME, topic]].rename(
         columns={settings.TIMESTAMP_SECONDS_COLUMN_NAME: "Timestamps", topic: "Latency"}
     )
@@ -49,7 +55,7 @@ with st.spinner(f"Calculating latency for {topic}...", show_time=True):
         "Rolling window",
         min_value=1,
         max_value=len(df_latency),
-        value=int(len(df_latency) * 0.2),
+        value=max(int(len(df_latency) * 0.2), 1),
         step=10,
     )
 
