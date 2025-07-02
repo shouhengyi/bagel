@@ -6,7 +6,7 @@ from typing import Any, Final
 import duckdb
 from pydantic import BaseModel
 
-from src.command.extract import validate
+from src.command.run import validate
 from src.reader import factory
 
 

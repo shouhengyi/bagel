@@ -7,7 +7,7 @@ import duckdb
 import pandas as pd
 from pydantic import BaseModel
 
-from src.command.extract import validate
+from src.command.run import validate
 from src.reader import factory
 
 

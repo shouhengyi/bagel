@@ -9,7 +9,7 @@ from pydantic import BaseModel
 
 from settings import settings
 from src import robolog
-from src.command.extract import validate
+from src.command.run import validate
 
 
 class FileExtension(Enum):

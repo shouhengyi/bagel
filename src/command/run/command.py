@@ -1,4 +1,4 @@
-"""Implementation of the extract command."""
+"""Implementation of the run command."""
 
 import functools
 import pathlib
@@ -8,8 +8,8 @@ import rich
 import typer
 import yaml
 
-from src.command.extract import operator, validate
-from src.command.extract.operator.save import FileExtension
+from src.command.run import operator, validate
+from src.command.run.operator.save import FileExtension
 
 SPINNER: str = "dots12"
 
@@ -19,12 +19,14 @@ app = typer.Typer()
 
 
 @app.command()
-def extract(  # noqa: C901, PLR0912
-    yaml_path: Annotated[
-        pathlib.Path, typer.Argument(help="Path to the YAML configuration file", show_default=False)
+def run(  # noqa: C901, PLR0912
+    pipeline_path: Annotated[
+        pathlib.Path,
+        typer.Argument(help="Path to the pipeline definition YAML file", show_default=False),
     ],
     robolog_path: Annotated[
-        pathlib.Path, typer.Argument(help="Path to the robolog", show_default=False)
+        pathlib.Path,
+        typer.Argument(help="Path to the robolog", show_default=False),
     ],
     start_seconds: Annotated[float | None, typer.Option(help="Start time in seconds")] = None,
     end_seconds: Annotated[float | None, typer.Option(help="End time in seconds")] = None,
@@ -32,14 +34,14 @@ def extract(  # noqa: C901, PLR0912
         FileExtension, typer.Option(help="Output file format for saved DataFrames")
     ] = FileExtension.PARQUET,
 ) -> None:
-    """Extract and transform robolog data into DataFrames."""
-    if not yaml_path.exists():
-        raise FileNotFoundError(yaml_path)
+    """Run data pipeline defined in the YAML file on the provided robolog."""
+    if not pipeline_path.exists():
+        raise FileNotFoundError(pipeline_path)
 
     if not robolog_path.exists():
         raise FileNotFoundError(robolog_path)
 
-    main_config = yaml.safe_load(yaml_path.read_text().encode("utf-8"))
+    main_config = yaml.safe_load(pipeline_path.read_text().encode("utf-8"))
 
     dataframes = []
     operators = []
