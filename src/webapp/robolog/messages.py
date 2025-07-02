@@ -1,11 +1,7 @@
 """Content of the Robolog/messages page."""
 
-import textwrap
-
-import duckdb
-from streamlit_ace import st_ace
-
 import streamlit as st
+from settings import settings
 
 if not st.session_state.get("robolog_path") or not st.session_state.get("topic_reader"):
     st.info("Select a robolog file in the summary page first.")
@@ -23,24 +19,9 @@ with st.container():
     st.markdown("<br>", unsafe_allow_html=True)
 
 
-with st.container():
-    sql_query = st_ace(
-        value=textwrap.dedent(f'''\
-        SELECT
-        \ttimestamp_seconds,
-        \t"{topic}" AS message
-        FROM "{topic}" AS topic
-        LIMIT 10
-        '''),  # noqa: S608
-        language="sql",
-        theme="clouds",
-        height=200,
-    )
-
-
 with st.spinner(f"Retrieving messages from {topic}...", show_time=True):
-    dataset = st.session_state.topic_reader.read([topic])
-    relation = duckdb.from_arrow(dataset)
-    duckdb.register(topic, relation)
-    st.markdown("#### Result")
-    st.dataframe(duckdb.sql(sql_query).to_df(), hide_index=True)
+    dataset = st.session_state.topic_reader.read([topic], peek=True)
+    df = dataset.to_table().to_pandas()
+    df.set_index(settings.TIMESTAMP_SECONDS_COLUMN_NAME, inplace=True)
+    st.dataframe(df.drop(settings.ROBOLOG_ID_COLUMN_NAME, axis=1), hide_index=False)
+    st.markdown(f"At most {settings.MIN_ARROW_RECORD_BATCH_SIZE_COUNT} messages are displayed.")

@@ -19,13 +19,14 @@ logger.setLevel(settings.LOG_LEVEL)
 class TopicMessageReader(Reader):
     """Base class for reading messages from specific topics in a robolog."""
 
-    def read(
+    def read(  # noqa: PLR0913
         self,
         topics: list[str] | None = None,
         start_seconds: float | None = None,
         end_seconds: float | None = None,
         ffill: bool = False,
         converters: dict[str, MessageConverter] | None = None,
+        peek: bool = False,
     ) -> ds.Dataset:
         """Return messages for the specified topics and time range.
 
@@ -37,6 +38,7 @@ class TopicMessageReader(Reader):
             converters (dict[str, MessageConverter] | None, optional): A dictionary mapping topic
                 names to their corresponding message converters. If provided, they will take
                 precedence over the default converters.
+            peek (bool, optional): If True, only return the first record batch.
 
         Returns:
             ds.Dataset: A PyArrow dataset containing the topic messages.
@@ -61,6 +63,7 @@ class TopicMessageReader(Reader):
             start_seconds or self.start_seconds,
             end_seconds or self.end_seconds,
             ffill,
+            peek,
         )
         if arrow_file.exists() and self._use_cache:
             logger.debug("Return from cache %s", arrow_file)
@@ -93,6 +96,9 @@ class TopicMessageReader(Reader):
                         humanize.naturalsize(record_batch.nbytes),
                         humanize.intcomma(record_batch.num_rows),
                     )
+                    if peek:
+                        logger.debug("Peek enabled, stopping after first record batch")
+                        break
 
             logger.debug("Created dataset and cached to %s", arrow_file)
             return ds.dataset(arrow_file, format="arrow")

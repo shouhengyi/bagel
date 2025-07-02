@@ -21,19 +21,19 @@ def _snippet_path(
     )
 
 
-def topic_arrow_file(
+def topic_arrow_file(  # noqa: PLR0913
     robolog_path: str | pathlib.Path,
     topics: list[str],
     start_seconds: float,
     end_seconds: float,
     ffill: bool,
+    peek: bool,
 ) -> pathlib.Path:
     """Generate an Arrow file path containing message time series of selected topics."""
     seeds = [str(sorted(topics)), str(ffill)]
-    return (
-        _snippet_path(robolog_path, start_seconds, end_seconds)
-        / f"topic_{_short_digest(seeds)}.arrow"
-    )
+    digest = _short_digest(seeds)
+    file_name = f"topic_{digest}.arrow" if not peek else f"topic_{digest}_peek.arrow"
+    return _snippet_path(robolog_path, start_seconds, end_seconds) / file_name
 
 
 def type_arrow_file(
