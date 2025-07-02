@@ -34,7 +34,7 @@ class Settings(BaseSettings):
     STORAGE_DIRECTORY: str = str(pathlib.Path.home() / ".bagel")
 
     # Minimum number of records per batch in arrow files
-    MIN_ARROW_RECORD_BATCH_SIZE_COUNT: int = 1_000
+    MIN_ARROW_RECORD_BATCH_SIZE_COUNT: int = 500
 
     # Bytes per record batch in arrow files. Not always respected
     ARROW_RECORD_BATCH_SIZE_BYTES: int = 1 * GB
