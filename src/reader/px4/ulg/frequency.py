@@ -1,4 +1,4 @@
-"""Calculate the frequency of messages in a PX4 .ulog file by topic."""
+"""Calculate the frequency of messages in a PX4 .ulg file by topic."""
 
 from collections.abc import Iterator
 
@@ -6,11 +6,11 @@ import pyarrow as pa
 
 from settings import settings
 from src.reader.frequency import TopicFrequencyReader
-from src.reader.px4.ulog.reader import ULogReader
+from src.reader.px4.ulg.reader import ULogReader
 
 
 class TopicFrequencyReader(TopicFrequencyReader, ULogReader):
-    """Calculate the frequency of messages in a PX4 .ulog file by topic."""
+    """Calculate the frequency of messages in a PX4 .ulg file by topic."""
 
     def _iter_record_batches(
         self,

@@ -1,4 +1,4 @@
-"""Read messages from a PX4 .ulog file by topic."""
+"""Calculate the frequency of messages in a PX4 .ulg file by topic."""
 
 from collections.abc import Iterator
 
@@ -6,35 +6,34 @@ import pyarrow as pa
 
 from settings import settings
 from src.convert.converter import MessageConverter
-from src.reader.px4.ulog.reader import ULogReader
-from src.reader.topic import TopicMessageReader
+from src.reader.px4.ulg.reader import ULogReader
+from src.reader.type import TypeMessageReader
 
 
-class TopicMessageReader(TopicMessageReader, ULogReader):
-    """Read messages from a PX4 .ulog file by topic."""
+class TypeMessageReader(TypeMessageReader, ULogReader):
+    """Calculate the frequency of messages in a PX4 .ulg file by topic."""
 
-    def _iter_record_batches(  # noqa: PLR0913
+    def _iter_record_batches(
         self,
         topics: list[str],
         start_seconds: float | None,
         end_seconds: float | None,
-        ffill: bool,
         schema: pa.Schema,
-        converters: dict[str, MessageConverter],
+        converter: MessageConverter,
     ) -> Iterator[pa.RecordBatch]:
         """Iterate over record batches for the specified topics and time range."""
         batch_size = settings.MIN_ARROW_RECORD_BATCH_SIZE_COUNT
         batch = {column: [] for column in schema.names}
-        record = {column: None for column in schema.names}
 
         messages = self._iter_messages(topics, start_seconds, end_seconds, timestamps_only=False)
 
         for timestamp, topic, message in messages:
-            if not ffill:
-                record = {column: None for column in schema.names}
-            record[settings.ROBOLOG_ID_COLUMN_NAME] = self.robolog_id
-            record[settings.TIMESTAMP_SECONDS_COLUMN_NAME] = timestamp
-            record[topic] = converters[topic].to_dict(message)
+            record = {
+                settings.ROBOLOG_ID_COLUMN_NAME: self.robolog_id,
+                settings.TIMESTAMP_SECONDS_COLUMN_NAME: timestamp,
+                settings.TOPIC_COLUMN_NAME: topic,
+                settings.MESSAGE_COLUMN_NAME: converter.to_dict(message),
+            }
 
             for column, value in record.items():
                 batch[column].append(value)

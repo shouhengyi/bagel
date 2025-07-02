@@ -26,7 +26,7 @@ class RobologType(Enum):
     ROS2_MCAP_FILE = "ros2_mcap_file"
     ROS2_DB3_DIR = "ros2_db3_dir"  # contain metadata.yaml and .db3 files
     ROS2_MCAP_DIR = "ros2_mcap_dir"  # contain metadata.yaml and .mcap files
-    PX4_ULOG_FILE = "px4_ulog_file"
+    PX4_ULG_FILE = "px4_ulg_file"
 
 
 @functools.lru_cache(maxsize=128)
@@ -46,7 +46,7 @@ def detect_robolog_type(robolog_path: str | pathlib.Path) -> RobologType:  # noq
             case ".mcap":
                 return RobologType.ROS2_MCAP_FILE
             case ".ulg":
-                return RobologType.PX4_ULOG_FILE
+                return RobologType.PX4_ULG_FILE
 
     elif path.is_dir() and (path / "metadata.yaml").exists():  # ROS2 bag directory
         metadata = yaml.safe_load((path / "metadata.yaml").read_text())
@@ -89,8 +89,8 @@ def start_and_end_seconds(robolog_path: str | pathlib.Path) -> tuple[float, floa
             end_seconds = start_seconds + metadata["duration_seconds"]
             return start_seconds, end_seconds
 
-        case RobologType.PX4_ULOG_FILE:
-            from src.reader.px4.ulog.metadata import extract_metadata
+        case RobologType.PX4_ULG_FILE:
+            from src.reader.px4.ulg.metadata import extract_metadata
 
             metadata = extract_metadata(robolog_path)
             start_seconds = metadata["start_timestamp_seconds"]
@@ -109,7 +109,7 @@ def datestr(robolog_path: str | pathlib.Path) -> str:
         raise FileNotFoundError(robolog_path)
 
     match detect_robolog_type(robolog_path):
-        case RobologType.PX4_ULOG_FILE:
+        case RobologType.PX4_ULG_FILE:
             try:
                 # `st_ctime` is "creation time" on Windows, or "last metadata change time" on Unix
                 timestamp_seconds = robolog_path.stat().st_ctime

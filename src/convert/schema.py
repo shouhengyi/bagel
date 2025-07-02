@@ -127,8 +127,8 @@ def _ros2msg_string_from_local(type_name: str, separator: str = "=" * 80) -> str
 
 
 @functools.lru_cache(maxsize=128)
-def _px4ulog_strings_from_ulog(robolog_path: str | pathlib.Path) -> dict[str, str]:
-    """Return a dictionary of message type names to px4ulog strings from a .ulog file."""
+def _px4ulog_strings_from_ulg(robolog_path: str | pathlib.Path) -> dict[str, str]:
+    """Return a dictionary of message type names to px4ulog strings from a .ulg file."""
     from pyulog import core
 
     ulog = core.ULog(str(robolog_path), parse_header_only=False)
@@ -160,7 +160,7 @@ def schema_encoding(robolog_path: str | pathlib.Path, type_name: str) -> Encodin
             except ValueError as err:
                 raise UnsupportedSchemaEncodingError(f"{type_name}: {encoding}") from err
 
-        case robolog.RobologType.PX4_ULOG_FILE:
+        case robolog.RobologType.PX4_ULG_FILE:
             return Encoding.PX4ULOG
 
         case _:
@@ -195,9 +195,9 @@ def schema_string(robolog_path: str | pathlib.Path, type_name: str) -> str | byt
                 case encoding:
                     raise UnsupportedSchemaEncodingError(f"{type_name}: {encoding}")
 
-        case robolog.RobologType.PX4_ULOG_FILE:
+        case robolog.RobologType.PX4_ULG_FILE:
             try:
-                return _px4ulog_strings_from_ulog(path)[type_name]
+                return _px4ulog_strings_from_ulg(path)[type_name]
             except KeyError as err:
                 raise SchemaNotFoundError(type_name) from err
 

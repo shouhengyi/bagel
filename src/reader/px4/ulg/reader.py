@@ -1,4 +1,4 @@
-"""Base class for PX4 .ulog readers."""
+"""Base class for PX4 .ulg readers."""
 
 import heapq
 import pathlib
@@ -8,11 +8,11 @@ from typing import Any
 from pyulog import core
 
 from src.reader import reader
-from src.reader.px4.ulog.metadata import to_dict as metadata_to_dict
+from src.reader.px4.ulg.metadata import to_dict as metadata_to_dict
 
 
 class LoggingMessage(reader.LoggingMessage):
-    """Logging message in a PX4 .ulog."""
+    """Logging message in a PX4 .ulg."""
 
     def to_dict(self) -> dict[str, Any]:
         """Convert the logging message to a dictionary."""
@@ -33,7 +33,7 @@ class LoggingMessage(reader.LoggingMessage):
 
 
 class ULogReader(reader.Reader):
-    """Base class for PX4 .ulog readers."""
+    """Base class for PX4 .ulg readers."""
 
     def __init__(self, robolog_path: str | pathlib.Path, use_cache: bool = True) -> None:
         """Initialize the ULogReader."""

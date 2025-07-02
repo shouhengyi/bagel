@@ -31,8 +31,8 @@ def make_topic_message_reader(
 
             return topic.TopicMessageReader(robolog_path, use_cache=use_cache)
 
-        case robolog.RobologType.PX4_ULOG_FILE:
-            from src.reader.px4.ulog import topic
+        case robolog.RobologType.PX4_ULG_FILE:
+            from src.reader.px4.ulg import topic
 
             return topic.TopicMessageReader(robolog_path, use_cache=use_cache)
 
@@ -62,8 +62,8 @@ def make_type_message_reader(
 
             return type_.TypeMessageReader(robolog_path, use_cache=use_cache)
 
-        case robolog.RobologType.PX4_ULOG_FILE:
-            from src.reader.px4.ulog import type as type_
+        case robolog.RobologType.PX4_ULG_FILE:
+            from src.reader.px4.ulg import type as type_
 
             return type_.TypeMessageReader(robolog_path, use_cache=use_cache)
 
@@ -93,8 +93,8 @@ def make_topic_frequency_reader(
 
             return frequency.TopicFrequencyReader(robolog_path, use_cache=use_cache)
 
-        case robolog.RobologType.PX4_ULOG_FILE:
-            from src.reader.px4.ulog import frequency
+        case robolog.RobologType.PX4_ULG_FILE:
+            from src.reader.px4.ulg import frequency
 
             return frequency.TopicFrequencyReader(robolog_path, use_cache=use_cache)
 

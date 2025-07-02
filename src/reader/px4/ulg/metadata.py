@@ -1,4 +1,4 @@
-"""Return metadata from a PX4 .ulog file as a JSON-serializable dictionary."""
+"""Return metadata from a PX4 .ulg file as a JSON-serializable dictionary."""
 
 import functools
 import pathlib
@@ -36,10 +36,10 @@ def to_dict(ulog: core.ULog) -> dict[str, Any]:
 
 @functools.lru_cache(maxsize=128)
 def extract_metadata(robolog_path: str | pathlib.Path) -> dict[str, Any]:
-    """Return metadata from a PX4 .ulog file as a JSON-serializable dictionary.
+    """Return metadata from a PX4 .ulg file as a JSON-serializable dictionary.
 
     Args:
-        robolog_path (str | pathlib.Path): Path to the PX4 .ulog file.
+        robolog_path (str | pathlib.Path): Path to the PX4 .ulg file.
 
     Returns:
         dict[str, Any]: Robolog's metadata as a JSON-serializable dictionary.
