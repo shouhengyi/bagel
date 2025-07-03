@@ -10,5 +10,5 @@ app = typer.Typer()
 
 @app.command()
 def up() -> None:
-    """Run the streamlit webapp."""
+    """Run the Bagel webapp."""
     cli.main_run([settings.WEBAPP_PATH])
