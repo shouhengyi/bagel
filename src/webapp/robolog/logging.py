@@ -11,6 +11,7 @@ topic_reader = st.session_state.get("topic_reader", None)
 
 if not robolog_path or not topic_reader:
     st.info("Select a robolog file in the summary page first.")
+    st.page_link("src/webapp/robolog/summary.py", label="Go to Summary", icon="👉")
     st.stop()
 
 

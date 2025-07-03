@@ -6,6 +6,7 @@ from settings import settings
 
 if not st.session_state.get("robolog_path") or not st.session_state.get("topic_reader"):
     st.info("Select a robolog file in the summary page first.")
+    st.page_link("src/webapp/robolog/summary.py", label="Go to Summary", icon="👉")
     st.stop()
 
 
