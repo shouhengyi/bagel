@@ -4,13 +4,13 @@ import pathlib
 from typing import Any, Final
 
 import duckdb
-from pydantic import BaseModel
 
 from src.command.run import validate
+from src.command.run.operator.base import Operator
 from src.reader import factory
 
 
-class ExtractTopic(BaseModel):
+class ExtractTopic(Operator):
     """An operator that extracts messages from specified topics in a robolog."""
 
     # Name of the DuckDB view to register
@@ -28,12 +28,12 @@ class ExtractTopic(BaseModel):
     @property
     def running_status(self) -> str:
         """Return the running status of the operator."""
-        return f"Extracting messages from {len(self.topics)} topics into [bold]{self.name}[/bold]"
+        return f"Extracting messages from {len(self.topics)} topics into **{self.name}**"
 
     @property
     def finished_status(self) -> str:
         """Return the finished status of the operator."""
-        return f":white_check_mark: Extracted messages from {len(self.topics)} topics into [bold]{self.name}[/bold]"  # noqa: E501
+        return f":white_check_mark: Extracted messages from {len(self.topics)} topics into **{self.name}**"  # noqa: E501
 
     @staticmethod
     def from_dict(data: dict[str, Any]) -> "ExtractTopic":

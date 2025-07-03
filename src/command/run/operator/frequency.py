@@ -4,13 +4,13 @@ import pathlib
 from typing import Any, Final
 
 import duckdb
-from pydantic import BaseModel
 
 from src.command.run import validate
+from src.command.run.operator.base import Operator
 from src.reader import factory
 
 
-class ExtractFrequency(BaseModel):
+class ExtractFrequency(Operator):
     """An operator that extracts message frequencies from specified topics in a robolog."""
 
     # Name of the DuckDB view to register
@@ -25,12 +25,12 @@ class ExtractFrequency(BaseModel):
     @property
     def running_status(self) -> str:
         """Return the running status of the operator."""
-        return f"Extracting frequencies of {len(self.topics)} topics into [bold]{self.name}[/bold]"
+        return f"Extracting frequencies of {len(self.topics)} topics into **{self.name}**"
 
     @property
     def finished_status(self) -> str:
         """Return the finished status of the operator."""
-        return f":white_check_mark: Extracted frequencies of {len(self.topics)} topics into [bold]{self.name}[/bold]"  # noqa: E501
+        return f":white_check_mark: Extracted frequencies of {len(self.topics)} topics into **{self.name}**"  # noqa: E501
 
     @staticmethod
     def from_dict(data: dict[str, Any]) -> "ExtractFrequency":

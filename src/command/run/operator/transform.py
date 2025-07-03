@@ -3,12 +3,12 @@
 from typing import Any, Final
 
 import duckdb
-from pydantic import BaseModel
 
 from src.command.run import validate
+from src.command.run.operator.base import Operator
 
 
-class TransformDataFrame(BaseModel):
+class TransformDataFrame(Operator):
     """An operator that applies a transformation on DuckDB views and return a new view."""
 
     # Name of the DuckDB view to register
@@ -37,12 +37,12 @@ class SqlTransformDataFrame(TransformDataFrame):
     @property
     def running_status(self) -> str:
         """Return the running status of the operator."""
-        return f"Writing SQL query result into [bold]{self.name}[/bold]"
+        return f"Writing SQL query result into **{self.name}**"
 
     @property
     def finished_status(self) -> str:
         """Return the finished status of the operator."""
-        return f":white_check_mark: Wrote SQL query result into [bold]{self.name}[/bold]"
+        return f":white_check_mark: Wrote SQL query result into **{self.name}**"
 
     def register(self) -> None:
         """Apply SQL statement and register the result as a DuckDB view."""

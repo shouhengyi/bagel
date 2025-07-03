@@ -5,13 +5,13 @@ from typing import Any, Final
 
 import duckdb
 import pandas as pd
-from pydantic import BaseModel
 
 from src.command.run import validate
+from src.command.run.operator.base import Operator
 from src.reader import factory
 
 
-class ExtractLogging(BaseModel):
+class ExtractLogging(Operator):
     """An operator that extracts logging messages from a robolog."""
 
     # Name of the DuckDB view to register
@@ -23,12 +23,12 @@ class ExtractLogging(BaseModel):
     @property
     def running_status(self) -> str:
         """Return the running status of the operator."""
-        return f"Extracting logging messages into [bold]{self.name}[/bold]"
+        return f"Extracting logging messages into **{self.name}**"
 
     @property
     def finished_status(self) -> str:
         """Return the finished status of the operator."""
-        return f":white_check_mark: Extracted logging messages into [bold]{self.name}[/bold]"
+        return f":white_check_mark: Extracted logging messages into **{self.name}**"
 
     @staticmethod
     def from_dict(data: dict[str, Any]) -> "ExtractLogging":

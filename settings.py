@@ -30,8 +30,14 @@ class Settings(BaseSettings):
     # Directory for caching intermediate artifacts
     CACHE_DIRECTORY: str = str(pathlib.Path.home() / ".cache" / "bagel")
 
-    # Directory for persisting final artifacts
+    # Directory for storing final artifacts
     STORAGE_DIRECTORY: str = str(pathlib.Path.home() / ".bagel")
+
+    # Directory for datasets created by the pipelines
+    DATASET_DIRECTORY: str = str(pathlib.Path(STORAGE_DIRECTORY) / "datasets")
+
+    # Directory for pipeline definitions created by the users through the webapp
+    PIPELINE_DEFINITION_DIRECTORY: str = str(pathlib.Path(STORAGE_DIRECTORY) / "pipelines")
 
     # Minimum number of records per batch in arrow files
     MIN_ARROW_RECORD_BATCH_SIZE_COUNT: int = 500
