@@ -54,31 +54,10 @@ class Reader:
         self._use_cache = use_cache
         self._robolog_id = robolog.generate_id(self.path)
 
-        if not hasattr(self, "_start_seconds") or not hasattr(self, "_end_seconds"):
-            self._start_seconds, self._end_seconds = robolog.start_and_end_seconds(self.path)
-
     @property
     def robolog_id(self) -> str:
         """Return robolog UUID."""
         return self._robolog_id
-
-    @property
-    def start_seconds(self) -> float:
-        """Return robolog start time in seconds.
-
-        Note that this timestamp might be relative to system boot time rather than the Unix epoch.
-
-        """
-        return self._start_seconds
-
-    @property
-    def end_seconds(self) -> float:
-        """Return robolog end time in seconds.
-
-        Note that this timestamp might be relative to system boot time rather than the Unix epoch.
-
-        """
-        return self._end_seconds
 
     @property
     def duration_seconds(self) -> float:
@@ -98,6 +77,24 @@ class Reader:
     @property
     def metadata(self) -> dict[str, Any]:
         """Return robolog metadata as a JSON-serializable dictionary."""
+        raise NotImplementedError()
+
+    @property
+    def start_seconds(self) -> float:
+        """Return robolog start time in seconds.
+
+        Note that this is **not** always the Unix epoch seconds.
+
+        """
+        raise NotImplementedError()
+
+    @property
+    def end_seconds(self) -> float:
+        """Return robolog end time in seconds.
+
+        Note that this is **not** always the Unix epoch seconds.
+
+        """
         raise NotImplementedError()
 
     @property

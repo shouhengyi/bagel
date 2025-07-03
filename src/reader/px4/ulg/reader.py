@@ -8,7 +8,7 @@ from typing import Any
 from pyulog import core
 
 from src.reader import reader
-from src.reader.px4.ulg.metadata import to_dict as metadata_to_dict
+from src.reader.metadata import find_primitives
 
 
 class LoggingMessage(reader.LoggingMessage):
@@ -32,20 +32,64 @@ class LoggingMessage(reader.LoggingMessage):
         }
 
 
+def _start_and_end_seconds_from_gps(ulog: core.ULog) -> tuple[float | None, float | None]:
+    gps_data_list = [data for data in ulog.data_list if data.name == "vehicle_gps_position"]
+    gps_data_list = sorted(gps_data_list, key=lambda x: x.multi_id)
+    start_timestamp_seconds = gps_data_list[0].data["time_utc_usec"][0] / 1e6
+    end_timestamp_seconds = gps_data_list[-1].data["time_utc_usec"][-1] / 1e6
+    return start_timestamp_seconds, end_timestamp_seconds
+
+
+def _metadata_from_ulog(ulog: core.ULog) -> dict[str, Any]:
+    # ULog must be initialized with `parse_header_only=False` to include all topics.
+    return {
+        "start_timestamp_seconds": ulog.start_timestamp / 1e6,
+        "last_timestamp_seconds": ulog.last_timestamp / 1e6,
+        "msg_info_dict": ulog.msg_info_dict,
+        "msg_info_multiple_dict": ulog.msg_info_multiple_dict,
+        "initial_parameters": ulog.initial_parameters,
+        "changed_parameters": ulog.changed_parameters,
+        "message_formats": {k: find_primitives(v) for k, v in ulog.message_formats.items()},
+        "logged_messages": [find_primitives(item) for item in ulog.logged_messages],
+        "logged_messages_tagged": {
+            k: find_primitives(v) for k, v in ulog.logged_messages_tagged.items()
+        },
+        "dropouts": [find_primitives(item) for item in ulog.dropouts],
+        "has_data_appended": ulog.has_data_appended,
+        "file_corruption": ulog.file_corruption,
+        "has_default_parameters": ulog.has_default_parameters,
+    }
+
+
 class ULogReader(reader.Reader):
     """Base class for PX4 .ulg readers."""
 
     def __init__(self, robolog_path: str | pathlib.Path, use_cache: bool = True) -> None:
         """Initialize the ULogReader."""
         super().__init__(robolog_path, use_cache)
+        self._ulog = core.ULog(str(robolog_path), parse_header_only=False)
+        self._metadata = _metadata_from_ulog(self._ulog)
 
-        self._ulog = core.ULog(str(self.path), parse_header_only=False)
-        self._metadata = metadata_to_dict(self._ulog)
+        try:
+            self._start_seconds, self._end_seconds = _start_and_end_seconds_from_gps(self._ulog)
+        except Exception:
+            self._start_seconds = self._ulog.start_timestamp / 1e6
+            self._end_seconds = self._ulog.last_timestamp / 1e6
 
     @property
     def metadata(self) -> dict[str, Any]:
         """Return robolog metadata as a JSON-serializable dictionary."""
         return self._metadata
+
+    @property
+    def start_seconds(self) -> float:
+        """Return robolog start time in seconds."""
+        return self._start_seconds
+
+    @property
+    def end_seconds(self) -> float:
+        """Return robolog end time in seconds."""
+        return self._end_seconds
 
     @property
     def size_bytes(self) -> int:

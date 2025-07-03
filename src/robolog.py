@@ -4,7 +4,6 @@ import functools
 import hashlib
 import pathlib
 import uuid
-from datetime import datetime
 from enum import Enum
 
 import yaml
@@ -62,66 +61,6 @@ def detect_robolog_type(robolog_path: str | pathlib.Path) -> RobologType:  # noq
     raise UnsupportedRobologTypeError(robolog_path)
 
 
-@functools.lru_cache(maxsize=128)
-def start_and_end_seconds(robolog_path: str | pathlib.Path) -> tuple[float, float]:
-    """Return robolog start time and end time in seconds.
-
-    Note that timestamps might be relative to system boot time rather than the Unix epoch.
-
-    """
-    match detect_robolog_type(robolog_path):
-        case RobologType.ROS1_BAG_FILE:
-            import rosbag
-
-            with rosbag.Bag(robolog_path, allow_unindexed=True) as bag:
-                return bag.get_start_time(), bag.get_end_time()
-
-        case (
-            RobologType.ROS2_DB3_FILE
-            | RobologType.ROS2_DB3_DIR
-            | RobologType.ROS2_MCAP_FILE
-            | RobologType.ROS2_MCAP_DIR
-        ):
-            from src.reader.ros2.metadata import extract_metadata
-
-            metadata = extract_metadata(robolog_path)
-            start_seconds = metadata["starting_time_seconds"]
-            end_seconds = start_seconds + metadata["duration_seconds"]
-            return start_seconds, end_seconds
-
-        case RobologType.PX4_ULG_FILE:
-            from src.reader.px4.ulg.metadata import extract_metadata
-
-            metadata = extract_metadata(robolog_path)
-            start_seconds = metadata["start_timestamp_seconds"]
-            end_seconds = metadata["last_timestamp_seconds"]
-            # System boot times (starting from 0), *not* Unix epoch times
-            return start_seconds, end_seconds
-
-        case _:
-            raise UnsupportedRobologTypeError(robolog_path)
-
-
-def datestr(robolog_path: str | pathlib.Path) -> str:
-    """Return date string of a robolog in the format YYYY-MM-DD."""
-    robolog_path = pathlib.Path(robolog_path).absolute()
-    if not robolog_path.exists():
-        raise FileNotFoundError(robolog_path)
-
-    match detect_robolog_type(robolog_path):
-        case RobologType.PX4_ULG_FILE:
-            try:
-                # `st_ctime` is "creation time" on Windows, or "last metadata change time" on Unix
-                timestamp_seconds = robolog_path.stat().st_ctime
-            except Exception:
-                # Fallback to current time if stat fails
-                timestamp_seconds = datetime.now().timestamp()
-        case _:
-            timestamp_seconds, _ = start_and_end_seconds(robolog_path)
-
-    return datetime.fromtimestamp(timestamp_seconds).strftime("%Y-%m-%d")
-
-
 def _md5_first_64mb(file: str | pathlib.Path) -> str:
     """Calculate the MD5 hash of a file based on the first 64 MB of its content."""
     hash_func = hashlib.new("md5")  # noqa: S324
@@ -146,12 +85,6 @@ def generate_id(robolog_path: str | pathlib.Path) -> str:
     return str(uuid.uuid5(uuid.NAMESPACE_OID, "_".join(content_hashes)))
 
 
-def snippet_name(
-    robolog_path: str | pathlib.Path, start_seconds: float | None, end_seconds: float | None
-) -> str:
+def snippet_name(robolog_path: str | pathlib.Path, start_seconds: float, end_seconds: float) -> str:
     """Generate a name for a robolog snippet."""
-    if start_seconds is None or end_seconds is None:
-        robolog_start_seconds, robolog_end_seconds = start_and_end_seconds(robolog_path)
-        start_seconds = start_seconds or robolog_start_seconds
-        end_seconds = end_seconds or robolog_end_seconds
-    return f"snippet_{str(generate_id(robolog_path))[:8]}_{start_seconds}_{end_seconds}"
+    return f"snippet_{str(generate_id(robolog_path))[:8]}_{start_seconds!s}_{end_seconds!s}"

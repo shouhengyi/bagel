@@ -1,6 +1,7 @@
 """An operator that saves a DuckDB view to disk."""
 
 import pathlib
+from datetime import datetime
 from enum import Enum
 from typing import Final
 
@@ -10,6 +11,7 @@ from settings import settings
 from src import robolog
 from src.command.run import validate
 from src.command.run.operator.base import Operator
+from src.reader import factory
 
 
 class FileExtension(Enum):
@@ -57,10 +59,15 @@ class SaveDataFrame(Operator):
         dry_run: bool = False,
     ) -> pathlib.Path:
         """Write the DuckDB view to disk and return the file path."""
+        reader = factory.make_topic_message_reader(robolog_path)
+        datestr = datetime.fromtimestamp(reader.start_seconds).strftime("%Y-%m-%d")
+        start_seconds = start_seconds or reader.start_seconds
+        end_seconds = end_seconds or reader.end_seconds
+
         file_path = (
             pathlib.Path(settings.DATASET_DIRECTORY)
             / self.name
-            / f"datestr={robolog.datestr(robolog_path)}"
+            / f"datestr={datestr}"
             / f"{robolog.snippet_name(robolog_path, start_seconds, end_seconds)}.{ext.value}"
         )
 

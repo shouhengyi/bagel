@@ -44,15 +44,23 @@ class BagReader(reader.Reader):
         """Initialize the BagReader."""
         super().__init__(robolog_path, use_cache)
 
-        self._bag = rosbag.Bag(self.path, allow_unindexed=allow_unindexed)
+        self._bag = rosbag.Bag(robolog_path, allow_unindexed=allow_unindexed)
         self._metadata = yaml.safe_load(self._bag._get_yaml_info())
-        self._start_seconds = self._bag.get_start_time()
-        self._end_seconds = self._bag.get_end_time()
 
     @property
     def metadata(self) -> dict[str, Any]:
         """Return robolog metadata as a JSON-serializable dictionary."""
         return self._metadata
+
+    @property
+    def start_seconds(self) -> float:
+        """Return robolog start time in seconds."""
+        self._bag.get_start_time()
+
+    @property
+    def end_seconds(self) -> float:
+        """Return robolog end time in seconds."""
+        self._bag.get_end_time()
 
     @property
     def size_bytes(self) -> int:

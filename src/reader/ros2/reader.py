@@ -53,6 +53,16 @@ class Ros2Reader(reader.Reader):
         return self._metadata
 
     @property
+    def start_seconds(self) -> float:
+        """Return robolog start time in seconds."""
+        return self._metadata["starting_time_seconds"]
+
+    @property
+    def end_seconds(self) -> float:
+        """Return robolog end time in seconds."""
+        return self._metadata["starting_time_seconds"] + self._metadata["duration_seconds"]
+
+    @property
     def size_bytes(self) -> int:
         """Return robolog size in bytes."""
         return self.metadata["bag_size"]
