@@ -133,8 +133,8 @@ def _px4ulog_strings_from_ulg(robolog_path: str | pathlib.Path) -> dict[str, str
 
     ulog = core.ULog(str(robolog_path), parse_header_only=False)
     schemas = {}
-    for type_name in {topic_data.name for topic_data in ulog.data_list}:
-        topic_data = ulog.get_dataset(type_name)
+    for type_name, multi_id in [(data.name, data.multi_id) for data in ulog.data_list]:
+        topic_data = ulog.get_dataset(type_name, multi_id)
         schema = {field.field_name: field.type_str for field in topic_data.field_data}
         schemas[type_name] = yaml.dump(schema)
     return schemas

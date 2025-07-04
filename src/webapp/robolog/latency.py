@@ -27,6 +27,11 @@ with st.container():
     st.markdown("<br>", unsafe_allow_html=True)
 
 
+if not topic:
+    st.warning("No topics found in the robolog.")
+    st.stop()
+
+
 with st.spinner(f"Calculating latency for {topic}...", show_time=True):
     freq_reader = factory.make_topic_frequency_reader(st.session_state.robolog_path)
     df_latency = freq_reader.read([topic]).to_table().to_pandas()

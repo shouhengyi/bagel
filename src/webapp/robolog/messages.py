@@ -21,6 +21,11 @@ with st.container():
     st.markdown("<br>", unsafe_allow_html=True)
 
 
+if not topic:
+    st.warning("No topics found in the robolog.")
+    st.stop()
+
+
 with st.spinner(f"Retrieving messages from {topic}...", show_time=True):
     dataset = st.session_state.topic_reader.read([topic], peek=True)
     df = dataset.to_table().to_pandas()

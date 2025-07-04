@@ -55,12 +55,12 @@ class BagReader(reader.Reader):
     @property
     def start_seconds(self) -> float:
         """Return robolog start time in seconds."""
-        self._bag.get_start_time()
+        return self._bag.get_start_time()
 
     @property
     def end_seconds(self) -> float:
         """Return robolog end time in seconds."""
-        self._bag.get_end_time()
+        return self._bag.get_end_time()
 
     @property
     def size_bytes(self) -> int:
