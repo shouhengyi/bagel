@@ -70,6 +70,11 @@ def make_operators_and_tasks(  # noqa: C901, PLR0912, PLR0913
                     operators.append(op)
                     tasks.append(functools.partial(op.register, robolog_path))
 
+            case operator.ExtractMetadata.YAML_KEYWORD:
+                for op in [operator.ExtractMetadata.from_dict(params) for params in configs]:
+                    operators.append(op)
+                    tasks.append(functools.partial(op.register, robolog_path))
+
             case operator.TransformDataFrame.YAML_KEYWORD:
                 for op in [operator.TransformDataFrame.from_dict(params) for params in configs]:
                     operators.append(op)
