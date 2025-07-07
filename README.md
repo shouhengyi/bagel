@@ -1,5 +1,10 @@
-# 🥯 Bag Extraction Tool
-`bagel` extracts and transforms topic messages from robotics logs into DataFrames, fast.
+<p align="center">
+  <img src="./doc/assets/logo.svg">
+</p>
+
+---
+
+Bagel extracts and transforms robotics topic messages into DataFrames, fast.
 
 It supports multiple log formats.
 
