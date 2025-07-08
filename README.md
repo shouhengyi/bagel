@@ -44,7 +44,7 @@ Bagel is built to be extensible. If your preferred format isn’t listed, we enc
 
 ### Running in Docker 🐳
 
-To run Bagel without installing local dependencies like ROS, you can use our provided Docker images. This example uses ROS 2 Kilted.
+To run Bagel without installing local dependencies like ROS, you can use our provided Docker images. Make sure you have [Docker Desktop](https://docs.docker.com/desktop/) installed. This example uses ROS 2 Kilted.
 
 #### Mount Your Data
 
@@ -79,7 +79,6 @@ If local dependencies like ROS are already installed, you can directly run Bagel
 First, ensure you have the following tools installed:
 
 - [Python 3.10+](https://www.python.org/downloads/)
-- [Docker Desktop](https://docs.docker.com/desktop/)
 - [Poetry](https://python-poetry.org/docs/)
 
 #### Install & Run
