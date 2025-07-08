@@ -42,36 +42,51 @@ Bagel is built to be extensible. If your preferred format isn’t listed, we enc
 
 ## Getting Started
 
-### Prerequisites
+### Running in Docker 🐳
 
-- [Python 3.10+](https://www.python.org/downloads/)
-- [Docker Desktop](https://docs.docker.com/desktop/)
-- [Poetry](https://python-poetry.org/docs/)
+To run Bagel without installing local dependencies like ROS, you can use our provided Docker images. This example uses ROS 2 Kilted.
 
-### Running Bagel
+#### Mount Your Data
 
-If all dependencies are installed locally for reading robologs, Bagel should be ready to go:
-
-```sh
-poetry install
-poetry run python3 main.py --help
-```
-
-If you prefer not to install robotics-related dependencies locally, you can run Bagel in an isolated Docker container. We provide [Docker images](./compose.yaml) for supported log formats — using ROS 2 Kilted as an example:
-
-Make sure to mount your local robolog data to the container in the compose.yaml file:
+First, give the container access to your robolog files. Open the compose.yaml file and find the service you want to use (e.g., ros2-kilted). Edit the volumes section to link your local data folder to the container's data folder.
 
 ```yaml
 services:
   ros2-kilted:
     ...
-    volumes:
-      - /local/path/to/robolog:/home/ubuntu/data/robolog
+    # volumes:                                     <-- ✅ Uncomment
+    #   - <path-to-local-data>:/home/ubuntu/data   <-- ✅ Uncomment & Replace
 ```
 
-Then, spin up the Bagel web app:
+#### Launch the App
+
+Build and start the container with a single command.
 
 ```sh
-docker compose -f compose.yaml build ros2-kilted
-docker compose -f compose.yaml up ros2-kilted
+docker compose up --build ros2-kilted
+```
+
+For future runs, you can omit the --build flag.
+
+Your local robolog files are now accessible inside the container at `/home/ubuntu/data`.
+
+### Running Locally 🛠️
+
+If local dependencies like ROS are already installed, you can directly run Bagel on your machine.
+
+#### Prerequisites
+
+First, ensure you have the following tools installed:
+
+- [Python 3.10+](https://www.python.org/downloads/)
+- [Docker Desktop](https://docs.docker.com/desktop/)
+- [Poetry](https://python-poetry.org/docs/)
+
+#### Install & Run
+
+Next, use Poetry to install the project dependencies and run the application.
+
+```sh
+poetry install
+poetry run python3 main.py up
 ```
