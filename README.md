@@ -53,13 +53,15 @@ Bagel is built to be extensible. If your preferred format isn’t listed, we enc
 If all dependencies are installed locally for reading robologs, Bagel should be ready to go:
 
 ```sh
-poetry install
+pip install poetry
 poetry run python3 main.py --help
 ```
 
 If you prefer not to install robotics-related dependencies locally, you can run Bagel in an isolated Docker container. We provide [Docker images](./compose.yaml) for supported log formats — using ROS 2 Kilted as an example:
 
 Make sure to mount your local robolog data to the container in the compose.yaml file:
+
+
 
 ```yaml
 services:
@@ -68,7 +70,11 @@ services:
     volumes:
       - /local/path/to/robolog:/home/ubuntu/data/robolog
 ```
+Notes: 
 
+* If you don't do this you will not be able to find bags on your local drive
+* Your path will start with '/home/ubuntu/data/robolog'
+  
 Then, spin up the Bagel web app:
 
 ```sh
