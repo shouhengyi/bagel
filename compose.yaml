@@ -13,6 +13,8 @@ services:
         BAGEL_WEBAPP_LOCAL_PORT: ${BAGEL_WEBAPP_LOCAL_PORT:-8501}
     ports:
       - "${BAGEL_WEBAPP_LOCAL_PORT:-8501}:${BAGEL_WEBAPP_LOCAL_PORT:-8501}"
+    # volumes:
+    #   - <path-to-local-data>:/home/ubuntu/data
 
   ros2-jazzy:
     image: ros2-jazzy
@@ -28,6 +30,8 @@ services:
         BAGEL_WEBAPP_LOCAL_PORT: ${BAGEL_WEBAPP_LOCAL_PORT:-8501}
     ports:
       - "${BAGEL_WEBAPP_LOCAL_PORT:-8501}:${BAGEL_WEBAPP_LOCAL_PORT:-8501}"
+    # volumes:
+    #   - <path-to-local-data>:/home/ubuntu/data
 
   ros2-iron:
     image: ros2-iron
@@ -43,6 +47,8 @@ services:
         BAGEL_WEBAPP_LOCAL_PORT: ${BAGEL_WEBAPP_LOCAL_PORT:-8501}
     ports:
       - "${BAGEL_WEBAPP_LOCAL_PORT:-8501}:${BAGEL_WEBAPP_LOCAL_PORT:-8501}"
+    # volumes:
+    #   - <path-to-local-data>:/home/ubuntu/data
 
   ros2-humble:
     image: ros2-humble
@@ -58,6 +64,8 @@ services:
         BAGEL_WEBAPP_LOCAL_PORT: ${BAGEL_WEBAPP_LOCAL_PORT:-8501}
     ports:
       - "${BAGEL_WEBAPP_LOCAL_PORT:-8501}:${BAGEL_WEBAPP_LOCAL_PORT:-8501}"
+    # volumes:
+    #   - <path-to-local-data>:/home/ubuntu/data
 
   ros1-noetic:
     image: ros1-noetic
@@ -73,3 +81,5 @@ services:
         BAGEL_WEBAPP_LOCAL_PORT: ${BAGEL_WEBAPP_LOCAL_PORT:-8501}
     ports:
       - "${BAGEL_WEBAPP_LOCAL_PORT:-8501}:${BAGEL_WEBAPP_LOCAL_PORT:-8501}"
+    # volumes:
+    #   - <path-to-local-data>:/home/ubuntu/data
