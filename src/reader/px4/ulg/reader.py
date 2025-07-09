@@ -37,6 +37,10 @@ def _start_and_end_seconds_from_gps(ulog: core.ULog) -> tuple[float | None, floa
     gps_data_list = sorted(gps_data_list, key=lambda x: x.multi_id)
     start_timestamp_seconds = gps_data_list[0].data["time_utc_usec"][0] / 1e6
     end_timestamp_seconds = gps_data_list[-1].data["time_utc_usec"][-1] / 1e6
+
+    if start_timestamp_seconds == 0 and end_timestamp_seconds == 0:
+        raise ValueError("No valid GPS timestamps found in the ULog.")
+
     return start_timestamp_seconds, end_timestamp_seconds
 
 
