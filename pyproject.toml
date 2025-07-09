@@ -22,7 +22,9 @@ dependencies = [
 packages = [{ include = "*", from = "src" }]
 
 [tool.poetry.group.dev.dependencies]
+ipykernel = "^6.29.0"
 ipython = "^8.0.0"
+jupyterlab = "^4.4.0"
 pytest = "^8.4.0"
 ruff = "^0.11.0"
 
