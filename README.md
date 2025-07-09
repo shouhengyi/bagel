@@ -10,7 +10,7 @@ Bagel allows you to extract, transform, and analyze robotics data — fast.
 
 Whether you're performing granular robot-level troubleshooting, analyzing fleet-wide performance metrics, or creating high-level executive dashboards, Bagel gets the job done.
 
-[Get started today](#getting-started) — no account needed.
+[Get started today](#getting-started)
 
 [Join our Discord server](https://discord.gg/KVKEmq3A)
 
