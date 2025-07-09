@@ -12,6 +12,8 @@ Whether you're performing granular robot-level troubleshooting, analyzing fleet-
 
 [Get started today](#getting-started) — no account needed.
 
+[Join our Discord server!](https://discord.gg/KVKEmq3A)
+
 ### A Sneak Peek
 
 Bagel can visualize camera latency from a robolog:
