@@ -53,7 +53,7 @@ To run Bagel without installing local dependencies like ROS, you can use our pro
 
 #### Mount Your Data
 
-First, give the container access to your robolog files. Open the compose.yaml file and find the service you want to use (e.g., ros2-kilted). Edit the volumes section to link your local data folder to the container's data folder.
+First, give the container access to your robolog files. Open the [compose.yaml](./compose.yaml) file and find the service you want to use (e.g., ros2-kilted). Edit the volumes section to link your local data folder to the container's data folder.
 
 ```yaml
 services:
@@ -77,7 +77,7 @@ Your local robolog files are now accessible inside the container at `/home/ubunt
 
 ### Running Locally 🛠️
 
-If local dependencies like ROS are already installed, you can directly run Bagel on your machine.
+If local dependencies like ROS are already installed, you can run Bagel directly on your machine.
 
 #### Prerequisites
 
