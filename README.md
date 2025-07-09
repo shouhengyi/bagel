@@ -42,6 +42,11 @@ Bagel is built to be extensible. If your preferred format isn’t listed, we enc
 
 ## Getting Started
 
+### Tutorials
+
+- [Calculating Acceleration Statistics from a PX4 ULog](./doc/tutorials/pipelines/0_basics.ipynb)
+- [Reading Topic Messages from a ROS 2 Bag](./doc/tutorials/readers/1_read_by_topic.ipynb)
+
 ### Running in Docker 🐳
 
 To run Bagel without installing local dependencies like ROS, you can use our provided Docker images. Make sure you have [Docker Desktop](https://docs.docker.com/desktop/) installed. This example uses ROS 2 Kilted.
