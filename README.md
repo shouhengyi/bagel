@@ -93,6 +93,6 @@ First, ensure you have the following tools installed:
 Next, use Poetry to install the project dependencies and run the application.
 
 ```sh
-poetry install
+pip install poetry
 poetry run python3 main.py up
 ```
