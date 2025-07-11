@@ -8,7 +8,17 @@
 
 Bagel allows you to extract, transform, and analyze robotics data — fast.
 
-Whether you're performing granular robot-level troubleshooting, analyzing fleet-wide performance metrics, or creating high-level executive dashboards, Bagel gets the job done.
+How fast? Cast topic messages to a **pandas `DataFrame`** or **PyArrow `Dataset`** in under four lines of code.
+
+```py
+from src.reader import factory
+
+reader = factory.make_topic_message_reader("./doc/tutorials/data/ros2")
+ds = reader.read(["/fluid_pressure"])  # return a pyarrow Dataset
+df = ds.to_table().to_pandas()         # cast into a pandas DataFrame
+```
+
+You can do much more! Whether you're performing granular robot-level troubleshooting, analyzing fleet-wide performance metrics, or creating high-level executive dashboards, Bagel gets the job done.
 
 [Get started today](#getting-started)
 
