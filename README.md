@@ -38,6 +38,22 @@ Bagel can visualize camera latency from a robolog:
   <img src="./doc/assets/fleet_exceptions.png">
 </p>
 
+### Why Do I Need Bagel?
+
+Robots generate a torrent of sensor data, and our ability to process it is falling behind. Trying to upload massive datasets from the field over flaky networks just doesn’t scale.
+
+Developers have been stuck with bad options:
+
+- 🗑️ **Drop data** and hope you don't need it later.
+- ✂️ **Snip logs** based on guesswork and miss the unknown unknowns.
+- 💸 **Pay a fortune** in transfer and storage costs to keep everything.
+
+Then came Bagel :bagel:!
+
+Why pay for cloud compute when your robots and servers are sitting idle? Bagel brings the processing to your hardware.
+
+Use your fleet's downtime to aggregate analytics, train models, and auto-triage issues right at the source. With Bagel, you only send the valuable, distilled insights to the cloud, not the raw firehose of data.
+
 ### Log Formats
 
 Bagel is designed to ingest a wide range of common robotics and sensor log formats out of the box.
