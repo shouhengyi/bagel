@@ -11,7 +11,7 @@ on:
 
 jobs:
   ruff:
-    name: Lint Python Code
+    name: Lint Python
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -20,7 +20,7 @@ jobs:
       - run: uv run ruff check . --output-format=github
 
   hadolint:
-    name: Lint Dockerfiles
+    name: Lint Dockerfile
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -28,3 +28,4 @@ jobs:
         with:
           dockerfile: Dockerfile*
           recursive: true
+          failure-threshold: error
