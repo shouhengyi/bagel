@@ -37,7 +37,6 @@ RUN /bin/bash -c "source /home/${USERNAME}/.venv_pipx/bin/activate && \
 
 # Install Poetry
 ARG POETRY_VERSION
-RUN python3 -m venv /home/${USERNAME}/.venv_pipx
 RUN /bin/bash -c "source /home/${USERNAME}/.venv_pipx/bin/activate && \
     pipx install \"poetry==${POETRY_VERSION}\" && \
     poetry self add poetry-plugin-shell && \
