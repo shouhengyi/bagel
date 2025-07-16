@@ -53,4 +53,4 @@ RUN if [ "_${DEV_MODE}" = "_true" ]; then \
     poetry install --only main,px4 --no-root --no-interaction --no-ansi; \
     fi
 
-CMD ["/bin/bash"]
+CMD ["poetry", "run", "python3", "main.py", "up"]
