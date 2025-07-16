@@ -17,4 +17,4 @@ jobs:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v6
       - run: uv sync --group dev
-      - run: ruff check . --output-format=github
+      - run: uv run ruff check . --output-format=github
