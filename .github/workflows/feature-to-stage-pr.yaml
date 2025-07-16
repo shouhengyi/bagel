@@ -11,10 +11,17 @@ on:
 
 jobs:
   ruff:
-    name: Lint Python
+    name: Lint Python Code
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v6
       - run: uv sync --group dev
       - run: uv run ruff check . --output-format=github
+
+  hadolint:
+    name: Lint Dockerfiles
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hadolint/hadolint-action@v3
