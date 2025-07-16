@@ -15,19 +15,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version-file: "pyproject.toml"
-
-      - name: Install uv
-        run: curl -LsSf https://astral.sh/uv/install.sh | sh
-        shell: bash
-        env:
-          PATH: ~/.cargo/bin:$PATH
-
-      - name: Install Project Dependencies (including dev group)
-        run: uv sync --group dev
-
-      - name: Run ruff check
-        run: ruff check . --output-format=github
+      - uses: astral-sh/setup-uv@v6
+      - run: uv sync --group dev
+      - run: ruff check . --output-format=github
