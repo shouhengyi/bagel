@@ -28,7 +28,7 @@ def datasets() -> None:
         lines = partitions
         if n_parts > MAX_PARTITIONS_DISPLAY:
             lines = (
-                lines[: (MAX_PARTITIONS_DISPLAY) // 2]
+                lines[: (MAX_PARTITIONS_DISPLAY) // 2]  # noqa: RUF005, RUF100
                 + ["..."]
                 + lines[-(MAX_PARTITIONS_DISPLAY - MAX_PARTITIONS_DISPLAY // 2) :]
             )

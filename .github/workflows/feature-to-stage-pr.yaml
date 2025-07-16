@@ -15,11 +15,19 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
         with:
           python-version-file: "pyproject.toml"
-      - run: |
-          python3 -m pip install --upgrade pip
-          pip install ruff
-          ruff --version
-      - run: ruff check . --output-format=github
+
+      - name: Install uv
+        run: curl -LsSf https://astral.sh/uv/install.sh | sh
+        shell: bash
+        env:
+          PATH: ~/.cargo/bin:$PATH
+
+      - name: Install Project Dependencies (including dev group)
+        run: uv sync --group dev
+
+      - name: Run ruff check
+        run: ruff check . --output-format=github
