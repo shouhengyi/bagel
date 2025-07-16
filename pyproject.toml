@@ -83,6 +83,7 @@ ignore = [
     "D213",    # conflicts with D212
     "PLC0415", # pylint (non top-level imports)
 ]
+exclude = ["**/*.ipynb"]
 
 [tool.ruff.lint.per-file-ignores]
 "./test/**/*.py" = ["S101", "D", "PLR2004"]

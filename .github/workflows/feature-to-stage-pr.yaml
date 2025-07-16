@@ -1,4 +1,4 @@
-name: Feature to Stage Pull Request
+name: Feature to Stage PR
 
 on:
   pull_request:
@@ -11,8 +11,8 @@ on:
 
 jobs:
   ruff:
+    name: Lint Python
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v6
