@@ -1,3 +1,9 @@
+[project]
+name = "bagel"
+version = "0.1.0"
+description = "Bag Extraction Tool"
+authors = []
+
 [tool.poetry]
 name = "bagel"
 version = "0.1.0"
