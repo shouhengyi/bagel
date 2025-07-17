@@ -6,11 +6,7 @@ ARG PYTHON_VERSION
 # Install basic tools and Python
 RUN apt-get update && apt-get install -y \
     build-essential \
-    git \
-    wget \
-    unzip \
     python${PYTHON_VERSION} \
-    python${PYTHON_VERSION}-dev \
     python3-pip \
     python3-venv \
     && rm -rf /var/lib/apt/lists/*
@@ -35,17 +31,22 @@ RUN python3 -m pip install --upgrade pip && \
     pipx --version
 
 # Install Poetry (latest stable)
-RUN pipx install poetry && \
-    poetry self add poetry-plugin-shell && \
-    poetry --version
+RUN pipx install poetry --verbose && \
+    poetry self add poetry-plugin-shell --no-ansi && \
+    poetry --version --no-ansi
 
-# Copy only dependency files first for better caching
-COPY --chown=${USERNAME}:${USERNAME} pyproject.toml ./
+# Copy pyproject.toml before running poetry install
+COPY pyproject.toml ./
 
-# Install dependencies (force add PyYAML for now)
+#Install dependencies (conditional dev-mode install)
+ARG DEV_MODE
 RUN poetry config virtualenvs.create true && \
     poetry config virtualenvs.in-project true && \
-    poetry install --only main,px4 --no-root --no-interaction --no-ansi
+    if [ "_${DEV_MODE}" = "_true" ]; then \
+      poetry install --only main,px4,dev --no-root --no-interaction --no-ansi; \
+    else \
+      poetry install --only main,px4 --no-root --no-interaction --no-ansi; \
+    fi
 
 # Copy source files
 COPY --chown=${USERNAME}:${USERNAME} main.py ./
