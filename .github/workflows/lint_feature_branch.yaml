@@ -23,7 +23,7 @@ jobs:
               - '**.py'
               - 'pyproject.toml'
             docker:
-              - '**/Dockerfile*''
+              - '**/Dockerfile*'
     outputs:
       python: ${{ steps.changes.outputs.python }}
       docker: ${{ steps.changes.outputs.docker }}
