@@ -1,23 +1,24 @@
-# ./docker/Dockerfile.px4
-
 FROM ubuntu:22.04
 
-# Set non-interactive mode which is needed for apt 
 ENV DEBIAN_FRONTEND=noninteractive
+ARG PYTHON_VERSION
 
-# Update and install basic tools 
+# Install basic tools and Python
 RUN apt-get update && apt-get install -y \
     build-essential \
     git \
     wget \
     unzip \
-    python3 \
+    python${PYTHON_VERSION} \
+    python${PYTHON_VERSION}-dev \
     python3-pip \
     python3-venv \
     && rm -rf /var/lib/apt/lists/*
 
-
-
+# Make sure we run the version passed in via docker-compose
+RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python${PYTHON_VERSION} 1 && \
+    update-alternatives --set python3 /usr/bin/python${PYTHON_VERSION} && \
+    python3 --version
 
 # Set up runtime environment
 ARG USERNAME=ubuntu
@@ -27,32 +28,38 @@ ENV PATH="/home/${USERNAME}/.local/bin:$PATH"
 RUN mkdir -p /home/${USERNAME}/runtime
 WORKDIR /home/${USERNAME}/runtime
 
-# Install pipx
-ARG PIPX_VERSION
-RUN python3 -m venv /home/${USERNAME}/.venv_pipx
-RUN /bin/bash -c "source /home/${USERNAME}/.venv_pipx/bin/activate && \
-    python3 -m pip install \"pipx==${PIPX_VERSION}\" && \
+# Install pipx (latest stable)
+RUN python3 -m pip install --upgrade pip && \
+    python3 -m pip install pipx && \
     pipx ensurepath && \
-    pipx --version"
+    pipx --version
 
-# Install Poetry
-ARG POETRY_VERSION
-RUN /bin/bash -c "source /home/${USERNAME}/.venv_pipx/bin/activate && \
-    pipx install \"poetry==${POETRY_VERSION}\" && \
+# Install Poetry (latest stable)
+RUN pipx install poetry && \
     poetry self add poetry-plugin-shell && \
-    poetry --version"
+    poetry --version
 
-# Set up virtual environment and install PyPI dependencies
+# Copy only dependency files first for better caching
 COPY --chown=${USERNAME}:${USERNAME} pyproject.toml ./
+
+# Install dependencies (force add PyYAML for now)
 RUN poetry config virtualenvs.create true && \
     poetry config virtualenvs.in-project true && \
-    poetry env activate
+    poetry install --only main,px4 --no-root --no-interaction --no-ansi
 
-ARG DEV_MODE
-RUN if [ "_${DEV_MODE}" = "_true" ]; then \
-   poetry install --only main,px4 --no-root --no-interaction --no-ansi; \
-    else \
-    poetry install --only main,px4 --no-root --no-interaction --no-ansi; \
-    fi
+# Copy source files
+COPY --chown=${USERNAME}:${USERNAME} main.py ./
+COPY --chown=${USERNAME}:${USERNAME} app.py ./
+COPY --chown=${USERNAME}:${USERNAME} settings.py ./
+COPY --chown=${USERNAME}:${USERNAME} src ./src
+COPY --chown=${USERNAME}:${USERNAME} test ./test
+RUN if [ "_$DEV_MODE" = "_false" ]; then rm -rf ./test; fi
+
+# Set up host and port for the webapp
+ARG BAGEL_WEBAPP_LOCAL_HOST
+ARG BAGEL_WEBAPP_LOCAL_PORT
+ENV BAGEL_WEBAPP_LOCAL_HOST=${BAGEL_WEBAPP_LOCAL_HOST}
+ENV BAGEL_WEBAPP_LOCAL_PORT=${BAGEL_WEBAPP_LOCAL_PORT}
+EXPOSE ${BAGEL_WEBAPP_LOCAL_PORT}
 
 CMD ["poetry", "run", "python3", "main.py", "up"]
