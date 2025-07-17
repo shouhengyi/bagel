@@ -3,7 +3,7 @@ name: Lint Feature Branch
 on:
   pull_request:
     branches:
-      - stage # Only run on pull requests targeting the 'stage' branch
+      - stage
     types:
       - opened
       - synchronize
