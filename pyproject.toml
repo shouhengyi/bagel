@@ -20,6 +20,15 @@ dependencies = [
     "typer (>=0.16.0,<1.0.0)",
 ]
 
+[dependency-groups]
+dev = [
+    "ipykernel (>=6.29.0, <7.0.0)",
+    "ipython (>=8.0.0, <9.0.0)",
+    "jupyterlab (>=4.4.0, <5.0.0)",
+    "pytest (>=8.4.0, <9.0.0)",
+    "ruff (>=0.12.0, <1.0.0)",
+]
+
 [tool.poetry]
 packages = [{ include = "*", from = "src" }]
 
@@ -28,7 +37,7 @@ ipykernel = "^6.29.0"
 ipython = "^8.0.0"
 jupyterlab = "^4.4.0"
 pytest = "^8.4.0"
-ruff = "^0.11.0"
+ruff = "^0.12.0"
 
 [tool.poetry.group.ros1.dependencies]
 pycryptodomex = "^3.23.0"
@@ -67,11 +76,14 @@ select = [
     "T20", # flake8-print
     "UP",  # pyupgrade
     "W",   # pycodestyle warnings
+
 ]
 ignore = [
-    "D203", # conflicts with D211
-    "D213", # conflicts with D212
+    "D203",    # conflicts with D211
+    "D213",    # conflicts with D212
+    "PLC0415", # pylint (non top-level imports)
 ]
+exclude = ["**/*.ipynb"]
 
 [tool.ruff.lint.per-file-ignores]
 "./test/**/*.py" = ["S101", "D", "PLR2004"]
