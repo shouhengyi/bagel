@@ -11,12 +11,6 @@ RUN apt-get update && apt-get upgrade -y && \
 RUN apt-get update && \
     apt-get install -y --no-install-recommends jq vim
 
-# Install pip and venv
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends python3-pip python3-venv && \
-    python3 -m pip --version && \
-    python3 -m venv --help
-
 # Install ROS2 packages
 RUN apt-get -y --no-install-recommends install \
     ros-${ROS_DISTRO}-ros-base \
@@ -32,33 +26,17 @@ ENV PATH="/home/${USERNAME}/.local/bin:$PATH"
 RUN mkdir -p /home/${USERNAME}/runtime
 WORKDIR /home/${USERNAME}/runtime
 
-# Install pipx
-ARG PIPX_VERSION
-RUN python3 -m venv /home/${USERNAME}/.venv_pipx
-RUN /bin/bash -c "source /home/${USERNAME}/.venv_pipx/bin/activate && \
-    python3 -m pip install \"pipx==${PIPX_VERSION}\" && \
-    pipx ensurepath && \
-    pipx --version"
-
-# Install Poetry
-ARG POETRY_VERSION
-RUN python3 -m venv /home/${USERNAME}/.venv_pipx
-RUN /bin/bash -c "source /home/${USERNAME}/.venv_pipx/bin/activate && \
-    pipx install \"poetry==${POETRY_VERSION}\" && \
-    poetry self add poetry-plugin-shell && \
-    poetry --version"
+# Install uv
+ARG UV_VERSION
+RUN /bin/bash -c "curl -LsSf https://astral.sh/uv/${UV_VERSION}/install.sh | sh && uv --version"
 
 # Set up virtual environment and install PyPI dependencies
 COPY --chown=${USERNAME}:${USERNAME} pyproject.toml ./
-RUN poetry config virtualenvs.create true && \
-    poetry config virtualenvs.in-project true && \
-    poetry env activate
-
 ARG DEV_MODE
 RUN if [ "_${DEV_MODE}" = "_true" ]; then \
-    poetry install --only main,ros2,dev --no-root --no-interaction --no-ansi; \
+    uv sync --group ros2 --group dev; \
     else \
-    poetry install --only main,ros2 --no-root --no-interaction --no-ansi; \
+    uv sync --group ros2; \
     fi
 
 # Copy source code
@@ -77,4 +55,4 @@ ENV BAGEL_WEBAPP_LOCAL_PORT=${BAGEL_WEBAPP_LOCAL_PORT}
 EXPOSE ${BAGEL_WEBAPP_LOCAL_PORT}
 
 # By default, the webapp will be launched
-CMD ["poetry", "run", "python3", "main.py", "up"]
+CMD ["uv", "run", "main.py", "up"]
