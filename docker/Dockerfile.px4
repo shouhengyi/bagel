@@ -1,0 +1,66 @@
+FROM ubuntu:22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+ARG PYTHON_VERSION
+
+# Install basic tools and Python
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    python${PYTHON_VERSION} \
+    python3-pip \
+    python3-venv \
+    && rm -rf /var/lib/apt/lists/*
+
+# Make sure we run the version passed in via docker-compose
+RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python${PYTHON_VERSION} 1 && \
+    update-alternatives --set python3 /usr/bin/python${PYTHON_VERSION} && \
+    python3 --version
+
+# Set up runtime environment
+ARG USERNAME=ubuntu
+RUN id -u 1000 >/dev/null 2>&1 || useradd -m -u 1000 ${USERNAME}
+USER ${USERNAME}
+ENV PATH="/home/${USERNAME}/.local/bin:$PATH"
+RUN mkdir -p /home/${USERNAME}/runtime
+WORKDIR /home/${USERNAME}/runtime
+
+# Install pipx (latest stable)
+RUN python3 -m pip install --upgrade pip && \
+    python3 -m pip install pipx && \
+    pipx ensurepath && \
+    pipx --version
+
+# Install Poetry (latest stable)
+RUN pipx install poetry --verbose && \
+    poetry self add poetry-plugin-shell --no-ansi && \
+    poetry --version --no-ansi
+
+# Copy pyproject.toml before running poetry install
+COPY pyproject.toml ./
+
+#Install dependencies (conditional dev-mode install)
+ARG DEV_MODE
+RUN poetry config virtualenvs.create true && \
+    poetry config virtualenvs.in-project true && \
+    if [ "_${DEV_MODE}" = "_true" ]; then \
+      poetry install --only main,px4,dev --no-root --no-interaction --no-ansi; \
+    else \
+      poetry install --only main,px4 --no-root --no-interaction --no-ansi; \
+    fi
+
+# Copy source files
+COPY --chown=${USERNAME}:${USERNAME} main.py ./
+COPY --chown=${USERNAME}:${USERNAME} app.py ./
+COPY --chown=${USERNAME}:${USERNAME} settings.py ./
+COPY --chown=${USERNAME}:${USERNAME} src ./src
+COPY --chown=${USERNAME}:${USERNAME} test ./test
+RUN if [ "_$DEV_MODE" = "_false" ]; then rm -rf ./test; fi
+
+# Set up host and port for the webapp
+ARG BAGEL_WEBAPP_LOCAL_HOST
+ARG BAGEL_WEBAPP_LOCAL_PORT
+ENV BAGEL_WEBAPP_LOCAL_HOST=${BAGEL_WEBAPP_LOCAL_HOST}
+ENV BAGEL_WEBAPP_LOCAL_PORT=${BAGEL_WEBAPP_LOCAL_PORT}
+EXPOSE ${BAGEL_WEBAPP_LOCAL_PORT}
+
+CMD ["poetry", "run", "python3", "main.py", "up"]
