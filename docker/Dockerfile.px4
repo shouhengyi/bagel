@@ -25,6 +25,7 @@ RUN /bin/bash -c "curl -LsSf https://astral.sh/uv/${UV_VERSION}/install.sh | sh 
 
 # Set up virtual environment and install PyPI dependencies
 COPY --chown=${USERNAME}:${USERNAME} pyproject.toml ./
+COPY --chown=${USERNAME}:${USERNAME} uv.lock ./
 ARG DEV_MODE
 RUN if [ "_${DEV_MODE}" = "_true" ]; then \
     uv sync --group px4; \
