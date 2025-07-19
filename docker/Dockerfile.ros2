@@ -1,22 +1,19 @@
 ARG ROS_DISTRO
 FROM ros:${ROS_DISTRO}-ros-core
 
-# Upgrade base image
-RUN apt-get update && apt-get upgrade -y && \
-    apt-get autoremove -y && \
+# Install common tools and ROS2 packages
+# hadolint ignore=DL3008
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install -y --no-install-recommends \
+    jq=1.7.1-3build1 \
+    vim=2:9.1.0016-1ubuntu7.8 \
+    "ros-${ROS_DISTRO}-ros-base" \
+    "ros-${ROS_DISTRO}-ros2bag" \
+    "ros-${ROS_DISTRO}-rosbag2-transport" \
+    "ros-${ROS_DISTRO}-rosbag2-storage-mcap" && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
-
-# Install common tools
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends jq vim
-
-# Install ROS2 packages
-RUN apt-get -y --no-install-recommends install \
-    ros-${ROS_DISTRO}-ros-base \
-    ros-${ROS_DISTRO}-ros2bag \
-    ros-${ROS_DISTRO}-rosbag2-transport \
-    ros-${ROS_DISTRO}-rosbag2-storage-mcap
 
 # Set up runtime environment
 ARG USERNAME=ubuntu
@@ -34,9 +31,9 @@ RUN /bin/bash -c "curl -LsSf https://astral.sh/uv/${UV_VERSION}/install.sh | sh 
 COPY --chown=${USERNAME}:${USERNAME} pyproject.toml ./
 ARG DEV_MODE
 RUN if [ "_${DEV_MODE}" = "_true" ]; then \
-    uv sync --group ros2 --group dev; \
-    else \
     uv sync --group ros2; \
+    else \
+    uv sync --no-dev --group ros2; \
     fi
 
 # Copy source code

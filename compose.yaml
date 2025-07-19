@@ -69,7 +69,6 @@ services:
       context: ./
       dockerfile: ./docker/Dockerfile.ros1
       args:
-        PYTHON_VERSION: "3.10"
         UV_VERSION: "0.8.0"
         DEV_MODE: ${DEV_MODE:-false}
         BAGEL_WEBAPP_LOCAL_HOST: ${BAGEL_WEBAPP_LOCAL_HOST:-0.0.0.0}

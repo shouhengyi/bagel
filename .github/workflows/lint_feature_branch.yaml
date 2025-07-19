@@ -48,6 +48,4 @@ jobs:
       - uses: actions/checkout@v4
       - uses: hadolint/hadolint-action@v3.1.0
         with:
-          dockerfile: Dockerfile*
-          recursive: true
-          failure-threshold: error
+          dockerfile: docker/Dockerfile.*
