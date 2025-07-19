@@ -112,13 +112,15 @@ If local dependencies like ROS are already installed, you can run Bagel directly
 First, ensure you have the following tools installed:
 
 - [Python 3.10+](https://www.python.org/downloads/)
-- [Poetry](https://python-poetry.org/docs/)
+- [uv](https://docs.astral.sh/uv/getting-started/installation/)
 
 #### Install & Run
 
-Next, use Poetry to install the project dependencies and run the application.
+Next, use `uv` to install the project dependencies and run the application. We are using ROS2 Kilted as example.
 
 ```sh
-poetry install
-poetry run python3 main.py up
+source /opt/ros/kilted/setup.sh
+
+uv sync --group ros2
+uv run main.py up
 ```
