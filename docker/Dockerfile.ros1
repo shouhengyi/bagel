@@ -2,18 +2,19 @@
 # Python 3.8.10
 FROM ros:noetic
 
+# Set the shell to use for RUN commands, enabling pipefail for robust scripting
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
 ########################################################
 ### ROS1 Noetic has reached EOL as of May, 2025      ###
 ### The following steps are needed to fix this image ###
 ########################################################
 
 # Remove old ROS package repository lists to prevent conflicts or signature errors
+# and remove the expired GPG key used to authenticate ROS package repositories
 RUN rm -f \
     /etc/apt/sources.list.d/ros-latest.list \
-    /etc/apt/sources.list.d/ros1-latest.list
-
-# Remove expired GPG keys used to authenticate ROS package repositories
-RUN rm -f \
+    /etc/apt/sources.list.d/ros1-latest.list \
     /usr/share/keyrings/ros1-latest-archive-keyring.gpg \
     /usr/share/keyrings/ros-archive-keyring.gpg
 
@@ -27,7 +28,12 @@ RUN if apt-key list | grep -q "${GPG_KEY}"; then \
 
 # Install tools needed to add new ROS package repositories and GPG keys
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends curl gnupg jq lsb-release vim && \
+    apt-get install -y --no-install-recommends \
+    curl=7.68.0-1ubuntu2.25 \
+    gnupg=2.2.19-3ubuntu2.5 \
+    jq=1.6-1ubuntu0.20.04.1 \
+    lsb-release=11.1.0ubuntu2 \
+    vim=2:8.1.2269-1ubuntu5.32 && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -37,9 +43,6 @@ RUN curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o 
     echo "deb [signed-by=${GPG_FILE}] http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" \
     > /etc/apt/sources.list.d/ros-latest.list
 
-# Upgrade base image
-RUN apt-get update && apt-get upgrade -y && apt-get clean
-
 # Source ROS for all users
 RUN echo "source /opt/ros/noetic/setup.bash" >> /etc/bash.bashrc
 
@@ -48,20 +51,19 @@ RUN echo "source /opt/ros/noetic/setup.bash" >> /etc/bash.bashrc
 # Now we can continue with the rest of the Dockerfile #
 #######################################################
 
-# Install Python and venv
-RUN apt-get install -y --no-install-recommends software-properties-common && \
+# Install new version Python
+ARG PYTHON_VERSION=3.10
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install -y --no-install-recommends \
+    software-properties-common=0.99.9.12 && \
     add-apt-repository ppa:deadsnakes/ppa && \
-    apt-get update
-
-ARG PYTHON_VERSION
-RUN apt-get install -y --no-install-recommends python${PYTHON_VERSION} python${PYTHON_VERSION}-venv && \
+    apt-get install -y --no-install-recommends \
+    python${PYTHON_VERSION}=3.10.18-1+focal1 && \
     ln -sf /usr/bin/python${PYTHON_VERSION} /usr/bin/python3 && \
-    python3 --version
-
-# Install pip
-RUN curl -sSL https://bootstrap.pypa.io/get-pip.py | python${PYTHON_VERSION} && \
-    ln -sf /usr/local/bin/pip${PYTHON_VERSION} /usr/local/bin/pip3 && \
-    pip3 --version
+    python3 --version && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # Set up runtime environment
 ARG USERNAME=ubuntu
@@ -71,33 +73,18 @@ ENV PATH="/home/${USERNAME}/.local/bin:$PATH"
 RUN mkdir -p /home/${USERNAME}/runtime
 WORKDIR /home/${USERNAME}/runtime
 
-# Install pipx
-ARG PIPX_VERSION
-RUN python3 -m venv /home/${USERNAME}/.venv_pipx
-RUN /bin/bash -c "source /home/${USERNAME}/.venv_pipx/bin/activate && \
-    python3 -m pip install \"pipx==${PIPX_VERSION}\" && \
-    pipx ensurepath && \
-    pipx --version"
-
-# Install Poetry
-ARG POETRY_VERSION
-RUN python3 -m venv /home/${USERNAME}/.venv_pipx
-RUN /bin/bash -c "source /home/${USERNAME}/.venv_pipx/bin/activate && \
-    pipx install \"poetry==${POETRY_VERSION}\" && \
-    poetry self add poetry-plugin-shell && \
-    poetry --version"
+# Install uv
+ARG UV_VERSION
+RUN /bin/bash -c "curl -LsSf https://astral.sh/uv/${UV_VERSION}/install.sh | sh && uv --version"
 
 # Set up virtual environment and install PyPI dependencies
 COPY --chown=${USERNAME}:${USERNAME} pyproject.toml ./
-RUN poetry config virtualenvs.create true && \
-    poetry config virtualenvs.in-project true && \
-    poetry env activate
-
+COPY --chown=${USERNAME}:${USERNAME} uv.lock ./
 ARG DEV_MODE
 RUN if [ "_${DEV_MODE}" = "_true" ]; then \
-    poetry install --only main,ros1,dev --no-root --no-interaction --no-ansi; \
+    uv sync --group ros1; \
     else \
-    poetry install --only main,ros1 --no-root --no-interaction --no-ansi; \
+    uv sync --no-dev --group ros1; \
     fi
 
 # Copy source code
@@ -116,4 +103,4 @@ ENV BAGEL_WEBAPP_LOCAL_PORT=${BAGEL_WEBAPP_LOCAL_PORT}
 EXPOSE ${BAGEL_WEBAPP_LOCAL_PORT}
 
 # By default, the webapp will be launched
-CMD ["poetry", "run", "python3", "main.py", "up"]
+CMD ["uv", "run", "main.py", "up"]
