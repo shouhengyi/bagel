@@ -91,17 +91,23 @@ services:
     #   - <path-to-local-data>:/home/ubuntu/data   <-- ✅ Uncomment & Replace
 ```
 
-#### Launch the App
+Your local robolog files will be accessible inside the container at `/home/ubuntu/data`.
 
-Build and start the container with a single command.
+#### Launch the Bagel Webapp
+
+Build and start the Bagel webapp in a container with with this command.
 
 ```sh
 docker compose up --build ros2-kilted
 ```
 
-For future runs, you can omit the --build flag.
+#### Launch the MCP Server
 
-Your local robolog files are now accessible inside the container at `/home/ubuntu/data`.
+Build and start the Bagel MCP server in a container with this command.
+
+```sh
+docker compose run --build --service-ports ros2-kilted uv run main.py up mcp
+```
 
 ### Running Locally 🛠️
 
@@ -114,13 +120,24 @@ First, ensure you have the following tools installed:
 - [Python 3.10+](https://www.python.org/downloads/)
 - [uv](https://docs.astral.sh/uv/getting-started/installation/)
 
-#### Install & Run
+#### Install & Source Dependencies
 
-Next, use `uv` to install the project dependencies and run the application. We are using ROS2 Kilted as example.
+Next, use `uv` to install the project dependencies. We are using ROS2 Kilted as example.
 
 ```sh
-source /opt/ros/kilted/setup.sh
+source /opt/ros/kilted/setup.sh  # needed for ROS2
 
 uv sync --group ros2
-uv run main.py up
+```
+
+#### Launch the Bagel Webapp
+
+```sh
+uv run main.py up webapp
+```
+
+#### Launch the MCP Server
+
+```sh
+uv run main.py up mcp
 ```
