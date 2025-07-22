@@ -50,14 +50,9 @@ def _metadata_from_ulog(ulog: core.ULog) -> dict[str, Any]:
         "start_timestamp_seconds": ulog.start_timestamp / 1e6,
         "last_timestamp_seconds": ulog.last_timestamp / 1e6,
         "msg_info_dict": ulog.msg_info_dict,
-        "msg_info_multiple_dict": ulog.msg_info_multiple_dict,
         "initial_parameters": ulog.initial_parameters,
         "changed_parameters": ulog.changed_parameters,
         "message_formats": {k: find_primitives(v) for k, v in ulog.message_formats.items()},
-        "logged_messages": [find_primitives(item) for item in ulog.logged_messages],
-        "logged_messages_tagged": {
-            k: find_primitives(v) for k, v in ulog.logged_messages_tagged.items()
-        },
         "dropouts": [find_primitives(item) for item in ulog.dropouts],
         "has_data_appended": ulog.has_data_appended,
         "file_corruption": ulog.file_corruption,

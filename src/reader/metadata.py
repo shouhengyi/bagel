@@ -2,7 +2,7 @@
 
 from typing import Any
 
-PY_PRIMITIVE_TYPES = (bool, int, float, str, bytes, type(None))
+PY_PRIMITIVE_TYPES = (bool, int, float, str, type(None))  # bytes type is not JSON serializable
 
 
 def is_primitive(value: object) -> bool:
