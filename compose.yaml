@@ -8,10 +8,12 @@ services:
         ROS_DISTRO: kilted
         UV_VERSION: "0.8.0"
         DEV_MODE: ${DEV_MODE:-false}
-        BAGEL_WEBAPP_LOCAL_HOST: ${BAGEL_WEBAPP_LOCAL_HOST:-0.0.0.0}
+        BAGEL_LOCAL_HOST: ${BAGEL_LOCAL_HOST:-0.0.0.0}
         BAGEL_WEBAPP_LOCAL_PORT: ${BAGEL_WEBAPP_LOCAL_PORT:-8501}
+        BAGEL_MCP_LOCAL_PORT: ${BAGEL_MCP_LOCAL_PORT:-8000}
     ports:
       - "${BAGEL_WEBAPP_LOCAL_PORT:-8501}:${BAGEL_WEBAPP_LOCAL_PORT:-8501}"
+      - "${BAGEL_MCP_LOCAL_PORT:-8000}:${BAGEL_MCP_LOCAL_PORT:-8000}"
     # volumes:
     #   - <path-to-local-data>:/home/ubuntu/data
 
@@ -24,10 +26,12 @@ services:
         ROS_DISTRO: jazzy
         UV_VERSION: "0.8.0"
         DEV_MODE: ${DEV_MODE:-false}
-        BAGEL_WEBAPP_LOCAL_HOST: ${BAGEL_WEBAPP_LOCAL_HOST:-0.0.0.0}
+        BAGEL_LOCAL_HOST: ${BAGEL_LOCAL_HOST:-0.0.0.0}
         BAGEL_WEBAPP_LOCAL_PORT: ${BAGEL_WEBAPP_LOCAL_PORT:-8501}
+        BAGEL_MCP_LOCAL_PORT: ${BAGEL_MCP_LOCAL_PORT:-8000}
     ports:
       - "${BAGEL_WEBAPP_LOCAL_PORT:-8501}:${BAGEL_WEBAPP_LOCAL_PORT:-8501}"
+      - "${BAGEL_MCP_LOCAL_PORT:-8000}:${BAGEL_MCP_LOCAL_PORT:-8000}"
     # volumes:
     #   - <path-to-local-data>:/home/ubuntu/data
 
@@ -40,10 +44,12 @@ services:
         ROS_DISTRO: iron
         UV_VERSION: "0.8.0"
         DEV_MODE: ${DEV_MODE:-false}
-        BAGEL_WEBAPP_LOCAL_HOST: ${BAGEL_WEBAPP_LOCAL_HOST:-0.0.0.0}
+        BAGEL_LOCAL_HOST: ${BAGEL_LOCAL_HOST:-0.0.0.0}
         BAGEL_WEBAPP_LOCAL_PORT: ${BAGEL_WEBAPP_LOCAL_PORT:-8501}
+        BAGEL_MCP_LOCAL_PORT: ${BAGEL_MCP_LOCAL_PORT:-8000}
     ports:
       - "${BAGEL_WEBAPP_LOCAL_PORT:-8501}:${BAGEL_WEBAPP_LOCAL_PORT:-8501}"
+      - "${BAGEL_MCP_LOCAL_PORT:-8000}:${BAGEL_MCP_LOCAL_PORT:-8000}"
     # volumes:
     #   - <path-to-local-data>:/home/ubuntu/data
 
@@ -56,10 +62,12 @@ services:
         ROS_DISTRO: humble
         UV_VERSION: "0.8.0"
         DEV_MODE: ${DEV_MODE:-false}
-        BAGEL_WEBAPP_LOCAL_HOST: ${BAGEL_WEBAPP_LOCAL_HOST:-0.0.0.0}
+        BAGEL_LOCAL_HOST: ${BAGEL_LOCAL_HOST:-0.0.0.0}
         BAGEL_WEBAPP_LOCAL_PORT: ${BAGEL_WEBAPP_LOCAL_PORT:-8501}
+        BAGEL_MCP_LOCAL_PORT: ${BAGEL_MCP_LOCAL_PORT:-8000}
     ports:
       - "${BAGEL_WEBAPP_LOCAL_PORT:-8501}:${BAGEL_WEBAPP_LOCAL_PORT:-8501}"
+      - "${BAGEL_MCP_LOCAL_PORT:-8000}:${BAGEL_MCP_LOCAL_PORT:-8000}"
     # volumes:
     #   - <path-to-local-data>:/home/ubuntu/data
 
@@ -71,10 +79,12 @@ services:
       args:
         UV_VERSION: "0.8.0"
         DEV_MODE: ${DEV_MODE:-false}
-        BAGEL_WEBAPP_LOCAL_HOST: ${BAGEL_WEBAPP_LOCAL_HOST:-0.0.0.0}
+        BAGEL_LOCAL_HOST: ${BAGEL_LOCAL_HOST:-0.0.0.0}
         BAGEL_WEBAPP_LOCAL_PORT: ${BAGEL_WEBAPP_LOCAL_PORT:-8501}
+        BAGEL_MCP_LOCAL_PORT: ${BAGEL_MCP_LOCAL_PORT:-8000}
     ports:
       - "${BAGEL_WEBAPP_LOCAL_PORT:-8501}:${BAGEL_WEBAPP_LOCAL_PORT:-8501}"
+      - "${BAGEL_MCP_LOCAL_PORT:-8000}:${BAGEL_MCP_LOCAL_PORT:-8000}"
     # volumes:
     #   - <path-to-local-data>:/home/ubuntu/data
 
@@ -86,9 +96,11 @@ services:
       args:
         UV_VERSION: "0.8.0"
         DEV_MODE: ${DEV_MODE:-false}
-        BAGEL_WEBAPP_LOCAL_HOST: ${BAGEL_WEBAPP_LOCAL_HOST:-0.0.0.0}
+        BAGEL_LOCAL_HOST: ${BAGEL_LOCAL_HOST:-0.0.0.0}
         BAGEL_WEBAPP_LOCAL_PORT: ${BAGEL_WEBAPP_LOCAL_PORT:-8501}
+        BAGEL_MCP_LOCAL_PORT: ${BAGEL_MCP_LOCAL_PORT:-8000}
     ports:
       - "${BAGEL_WEBAPP_LOCAL_PORT:-8501}:${BAGEL_WEBAPP_LOCAL_PORT:-8501}"
+      - "${BAGEL_MCP_LOCAL_PORT:-8000}:${BAGEL_MCP_LOCAL_PORT:-8000}"
     # volumes:
     #   - <path-to-local-data>:/home/ubuntu/data
