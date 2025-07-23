@@ -1,6 +1,8 @@
 <p align="center">
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/shouhengyi/bagel/refs/heads/feature/mcp-demo/doc/assets/bagel_logo_dark_mode.svg">
-  <img src="./doc/assets/bagel_logo_light_mode.svg">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="./doc/assets/bagel_logo_dark_mode.svg">
+    <img src="./doc/assets/bagel_logo_light_mode.svg" alt="Bagel Logo">
+  </picture>
 </p>
 
 ---
