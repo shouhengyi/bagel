@@ -1,5 +1,8 @@
 <p align="center">
-  <img src="./doc/assets/logo.svg">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="./doc/assets/bagel_logo_dark_mode.svg">
+    <img src="./doc/assets/bagel_logo_light_mode.svg" alt="Bagel Logo">
+  </picture>
 </p>
 
 ---
