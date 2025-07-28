@@ -29,14 +29,11 @@ Bagel lets you ask extract, transform and leverage your robotics data super easi
 
 We turn every robot into a an MCP server to let you manage, analyze and troubleshoot your robots with the latest AI tools. 
 
+[Read more about MCP here!](https://modelcontextprotocol.io/docs/getting-started/intro)
+
 Use the web app to look at your data, or ask quesions and get answers
 
 However you want to work - Bagel wants to work with you! 
-
-Read more about MCP here 
-
-[MCP Documentation](https://modelcontextprotocol.io/docs/getting-started/intro)
-
 
 
 ## Get Started
@@ -97,7 +94,7 @@ Bagel is built to be extensible. If your preferred format isn’t listed, we enc
 
 - [Calculating Acceleration Statistics from a PX4 ULog](./doc/tutorials/pipelines/0_basics.ipynb)
 - [Reading Topic Messages from a ROS 2 Bag](./doc/tutorials/readers/1_read_by_topic.ipynb)
-- [MCP Tutorial - Gemini](./doc/tutorials/mcp/0_claude_code_px4.ipynb)
+- [MCP Tutorial - Claude Code](./doc/tutorials/mcp/0_claude_code_px4.ipynb)
 - [MCP Tutorial - Gemini](./doc/tutorials/mcp/1_gemini_cli_ros2.ipynb)
 
 ### Running in Docker 🐳
