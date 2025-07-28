@@ -7,7 +7,43 @@
 
 ---
 
-# Bagel: Bag Extraction Tool
+# Bagel - Next Generation Toolchain for Robotics 
+
+Robotics is hard....We're here to help. We know the next generation of robotics is going to need a next generation of tools to solve the next generation of problems. Robots generate a torrent of sensor data, and our ability to process it is falling behind. We know the pain of trying to upload massive datasets from the field. 
+
+To deal with this the robotics developers have the following (bad) options:
+
+- 🗑️ **Drop data** and hope you don't need it later.
+- ✂️ **Snip logs** based on guesswork and miss the unknown unknowns.
+- 💸 **Pay a fortune** in transfer and storage costs to keep everything.
+
+
+ On top of it all, we have a lot of great agentic tools, but almost none of them directed and helping the industry solve it's proble,s. 
+
+ That's why we built Bagel. Edge first data processing and intelligence to help solve your most pressing problems. Use your fleet's downtime to aggregate analytics, train models, and auto-triage issues right at the source. With Bagel, you only send the valuable, distilled insights to the cloud, not the raw firehose of data. Use MCP to interact with your robots and data like never before.
+
+
+## Agentic AI + Robotics Toolchain to solve your biggest challenges. 
+
+Bagel lets you ask extract, transform and leverage your robotics data super easily. But even more than that, you now interact with your robots and your robotics data in natural langauge.
+
+We turn every robot into a an MCP server to let you manage, analyze and troubleshoot your robots with the latest AI tools. 
+
+Use the web app to look at your data, or ask quesions and get answers
+
+However you want to work - Bagel wants to work with you! 
+
+
+
+## Get Started
+
+
+[Get started today](#getting-started)
+
+[Join our Discord server](https://discord.gg/KVKEmq3A)
+
+### A Sneak Peek
+
 
 Bagel allows you to extract, transform, and analyze robotics data — fast.
 
@@ -23,11 +59,6 @@ df = ds.to_table().to_pandas()         # cast into a pandas DataFrame
 
 You can do much more! Whether you're performing granular robot-level troubleshooting, analyzing fleet-wide performance metrics, or creating high-level executive dashboards, Bagel gets the job done.
 
-[Get started today](#getting-started)
-
-[Join our Discord server](https://discord.gg/KVKEmq3A)
-
-### A Sneak Peek
 
 Bagel can visualize camera latency from a robolog:
 
@@ -41,21 +72,6 @@ Bagel can visualize camera latency from a robolog:
   <img src="./doc/assets/fleet_exceptions.png">
 </p>
 
-### Why Do I Need Bagel?
-
-Robots generate a torrent of sensor data, and our ability to process it is falling behind. Trying to upload massive datasets from the field over flaky networks just doesn’t scale.
-
-Developers have been stuck with bad options:
-
-- 🗑️ **Drop data** and hope you don't need it later.
-- ✂️ **Snip logs** based on guesswork and miss the unknown unknowns.
-- 💸 **Pay a fortune** in transfer and storage costs to keep everything.
-
-Then came Bagel :bagel:!
-
-Why pay for cloud compute when your robots and servers are sitting idle? Bagel brings the processing to your hardware.
-
-Use your fleet's downtime to aggregate analytics, train models, and auto-triage issues right at the source. With Bagel, you only send the valuable, distilled insights to the cloud, not the raw firehose of data.
 
 ### Log Formats
 
@@ -77,6 +93,7 @@ Bagel is built to be extensible. If your preferred format isn’t listed, we enc
 
 - [Calculating Acceleration Statistics from a PX4 ULog](./doc/tutorials/pipelines/0_basics.ipynb)
 - [Reading Topic Messages from a ROS 2 Bag](./doc/tutorials/readers/1_read_by_topic.ipynb)
+- [MCP Tutorial](./doc/tutorials/mcp/1_gemini_cli_ros2.ipynb)
 
 ### Running in Docker 🐳
 
