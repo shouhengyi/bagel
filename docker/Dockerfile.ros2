@@ -6,8 +6,8 @@ FROM ros:${ROS_DISTRO}-ros-core
 RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y --no-install-recommends \
-    jq \
-    vim \
+    jq=1.7.1-3build1 \
+    vim=2:9.1.0016-1ubuntu7.8 \
     "ros-${ROS_DISTRO}-ros-base" \
     "ros-${ROS_DISTRO}-ros2bag" \
     "ros-${ROS_DISTRO}-rosbag2-transport" \

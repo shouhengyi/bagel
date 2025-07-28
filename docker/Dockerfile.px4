@@ -3,13 +3,12 @@
 FROM ubuntu:22.04
 
 # Install common tools
-# hadolint ignore=DL3008
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-    ca-certificates \
-    curl \
-    jq \
-    vim && \
+    ca-certificates=20240203~22.04.1 \
+    curl=7.81.0-1ubuntu1.20 \
+    jq=1.6-2.1ubuntu3 \
+    vim=2:8.2.3995-1ubuntu2.24 && \
     rm -rf /var/lib/apt/lists/*
 
 # Set up runtime environment
