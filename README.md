@@ -1,7 +1,7 @@
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="./doc/assets/bagel_logo_dark_mode.png">
-    <img src="./doc/assets/bagel_logo_light_mode.png" alt="Bagel Logo">
+    <img src="./doc/assets/bagel_logo_light_mode.png" alt="Bagel Logo" width="400">
   </picture>
 </p>
 
