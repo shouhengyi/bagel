@@ -1,80 +1,77 @@
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="./doc/assets/bagel_logo_dark_mode.png">
-    <img src="./doc/assets/bagel_logo_light_mode.png" alt="Bagel Logo">
+    <img src="./doc/assets/bagel_logo_light_mode.png" width="400">
   </picture>
 </p>
 
+<h1 align="center">
+  <a href="https://github.com/shouhengyi/bagel/blob/stage/LICENSE">
+    <img alt="Apache" src="https://img.shields.io/badge/license-Apache-blue.svg">
+  </a>
+  <a href="https://discord.gg/QJDwuDGJsH">
+    <img alt="Rerun Discord" src="https://img.shields.io/discord/1392632504908906506?label=Discord">
+  </a>
+</h1>
+
 ---
 
-# Bagel: Bag Extraction Tool
+Bagel is an agentic tool that allows you to interact with your physical data using natural language.
 
-Bagel allows you to extract, transform, and analyze robotics data — fast.
+For example, you can ask Bagel to check a PX4 drone log for hard landings:
 
-How fast? Cast topic messages to a **pandas `DataFrame`** or **PyArrow `Dataset`** in under four lines of code.
+<p align="center">
+  <picture>
+    <img src="./doc/assets/prompt_hard_landing.gif" width="90%">
+  </picture>
+</p>
 
-```py
-from src.reader import factory
+Bagel can also propose fixes for detected errors in your robot:
 
-reader = factory.make_topic_message_reader("./doc/tutorials/data/ros2")
-ds = reader.read(["/fluid_pressure"])  # return a pyarrow Dataset
-df = ds.to_table().to_pandas()         # cast into a pandas DataFrame
+<p align="center">
+  <picture>
+    <img src="./doc/assets/prompt_find_errors.gif" width="90%">
+  </picture>
+</p>
+
+Bagel works with a wide range of common robotics and sensor log formats out of the box. Don't see your format? [Open a ticket](https://github.com/shouhengyi/bagel/issues).
+
+| Format                         |
+| ------------------------------ |
+| ✅ **ROS 2** (`.mcap`, `.db3`) |
+| ✅ **ROS 1** (`.bag`)          |
+| ✅ **PX4** (`.ulg`)            |
+
+## Quickstart
+
+We are using ROS2 Kilted and Claude Code as example.
+
+```sh
+source /opt/ros/kilted/setup.sh  # Source ROS2 dependencies
+uv sync --group ros2             # Install PyPI packages
+uv run main.py up mcp            # Start Bagel MCP server
 ```
 
-You can do much more! Whether you're performing granular robot-level troubleshooting, analyzing fleet-wide performance metrics, or creating high-level executive dashboards, Bagel gets the job done.
+Open another terminal and run:
 
-[Get started today](#getting-started)
+```sh
+# Add Bagel MCP server to Claude Code
+claude mcp add --transport sse bagel http://localhost:8000/sse
 
-[Join our Discord server](https://discord.gg/KVKEmq3A)
+# Launch Claude Code
+claude
 
-### A Sneak Peek
+# Happy prompting
+> Summarize the metadata of robolog "./doc/tutorials/data/ros2".
+```
 
-Bagel can visualize camera latency from a robolog:
-
-<p align="center">
-  <img src="./doc/assets/latency.png">
-</p>
-
-...or aggregate fleet-level exceptions over time:
-
-<p align="center">
-  <img src="./doc/assets/fleet_exceptions.png">
-</p>
-
-### Why Do I Need Bagel?
-
-Robots generate a torrent of sensor data, and our ability to process it is falling behind. Trying to upload massive datasets from the field over flaky networks just doesn’t scale.
-
-Developers have been stuck with bad options:
-
-- 🗑️ **Drop data** and hope you don't need it later.
-- ✂️ **Snip logs** based on guesswork and miss the unknown unknowns.
-- 💸 **Pay a fortune** in transfer and storage costs to keep everything.
-
-Then came Bagel :bagel:!
-
-Why pay for cloud compute when your robots and servers are sitting idle? Bagel brings the processing to your hardware.
-
-Use your fleet's downtime to aggregate analytics, train models, and auto-triage issues right at the source. With Bagel, you only send the valuable, distilled insights to the cloud, not the raw firehose of data.
-
-### Log Formats
-
-Bagel is designed to ingest a wide range of common robotics and sensor log formats out of the box.
-
-| Format                         | Supported Encodings        |
-| ------------------------------ | -------------------------- |
-| ✅ **ROS 2** (`.mcap`, `.db3`) | `ros1`, `ros2`, `protobuf` |
-| ✅ **ROS 1** (`.bag`)          | `ros1`                     |
-| ✅ **PX4** (`.ulg`)            | `ULog`                     |
-
-#### Don’t See Your Format?
-
-Bagel is built to be extensible. If your preferred format isn’t listed, we encourage you to **[open a feature request](https://github.com/shouhengyi/bagel/issues)** to start a discussion!
-
-## Getting Started
+The Bagel MCP server is **not exclusively tied to Claude**. You're free to integrate your
+preferred LLMs with Bagel.
 
 ### Tutorials
 
+- [MCP Tutorial - Claude Code](./doc/tutorials/mcp/0_claude_code_px4.ipynb)
+- [MCP Tutorial - Gemini](./doc/tutorials/mcp/1_gemini_cli_ros2.ipynb)
 - [Calculating Acceleration Statistics from a PX4 ULog](./doc/tutorials/pipelines/0_basics.ipynb)
 - [Reading Topic Messages from a ROS 2 Bag](./doc/tutorials/readers/1_read_by_topic.ipynb)
 
@@ -96,51 +93,10 @@ services:
 
 Your local robolog files will be accessible inside the container at `/home/ubuntu/data`.
 
-#### Launch the Bagel Webapp
-
-Build and start the Bagel webapp in a container with with this command.
-
-```sh
-docker compose up --build ros2-kilted
-```
-
 #### Launch the MCP Server
 
 Build and start the Bagel MCP server in a container with this command.
 
 ```sh
 docker compose run --build --service-ports ros2-kilted uv run main.py up mcp
-```
-
-### Running Locally 🛠️
-
-If local dependencies like ROS are already installed, you can run Bagel directly on your machine.
-
-#### Prerequisites
-
-First, ensure you have the following tools installed:
-
-- [Python 3.10+](https://www.python.org/downloads/)
-- [uv](https://docs.astral.sh/uv/getting-started/installation/)
-
-#### Install & Source Dependencies
-
-Next, use `uv` to install the project dependencies. We are using ROS2 Kilted as example.
-
-```sh
-source /opt/ros/kilted/setup.sh  # needed for ROS2
-
-uv sync --group ros2
-```
-
-#### Launch the Bagel Webapp
-
-```sh
-uv run main.py up webapp
-```
-
-#### Launch the MCP Server
-
-```sh
-uv run main.py up mcp
 ```
