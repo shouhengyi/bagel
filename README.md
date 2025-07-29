@@ -71,9 +71,9 @@ preferred LLMs with Bagel.
 ### Tutorials
 
 - [MCP Tutorial - Claude Code](./doc/tutorials/mcp/0_claude_code_px4.ipynb)
-- [MCP Tutorial - Gemini](./doc/tutorials/mcp/1_gemini_cli_ros2.ipynb)
-- [Calculating Acceleration Statistics from a PX4 ULog](./doc/tutorials/pipelines/0_basics.ipynb)
-- [Reading Topic Messages from a ROS 2 Bag](./doc/tutorials/readers/1_read_by_topic.ipynb)
+- [MCP Tutorial - Gemini CLI](./doc/tutorials/mcp/1_gemini_cli_ros2.ipynb)
+- [Build a Data Pipeline from a PX4 ULog](./doc/tutorials/pipelines/0_basics.ipynb)
+- [Read Topic Messages from a ROS 2 Bag](./doc/tutorials/readers/1_read_by_topic.ipynb)
 
 ### Running in Docker 🐳
 
