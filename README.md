@@ -16,7 +16,7 @@
 
 ---
 
-Bagel is an agentic tool that allows you to interact with your physical data using natural language.
+Bagel lets you chat with your robotics data.
 
 For example, you can ask Bagel to check a PX4 drone's IMU data for hard landings:
 
