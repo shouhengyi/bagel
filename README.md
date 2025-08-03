@@ -42,6 +42,8 @@ Bagel works with a wide range of common robotics and sensor log formats out of t
 | ✅ **ROS 1** (`.bag`)          |
 | ✅ **PX4** (`.ulg`)            |
 
+Don't forget to join our [Discord server](https://discord.gg/QJDwuDGJsH)!
+
 ## Quickstart
 
 We are using ROS2 Kilted and Claude Code as example.
